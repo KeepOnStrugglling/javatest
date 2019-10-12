@@ -27,10 +27,10 @@ public class RunPython {
     /**
      * 使用jython运行py代码，缺点：一旦引用第三方库容易报错，而即便手动设置第三方库，也有可能出现错误
      * @param script python解析代码
-     * @param report 报文
+     * @param params python代码中的参数
      * @return
      */
-    public static Map<String,Object> runPythonByJython(String script, String report){
+    public static Map<String,Object> runPythonByJython(String script, String params){
         Map<String,Object> rtnMap = new HashMap<>();
 
         Properties props = new Properties();
@@ -47,7 +47,7 @@ public class RunPython {
             // 假设python只有一个main方法，所有代码都在main方法内
             PyFunction function = interpreter.get("main",PyFunction.class);
             // 将报文代入并执行python进行解析
-            PyObject o = function.__call__(Py.newString(report));
+            PyObject o = function.__call__(Py.newString(params));
             rtnMap.put("result",o);
             interpreter.cleanup();
             interpreter.close();
