@@ -3,6 +3,7 @@ package com.javatest.util;
 import org.python.core.Py;
 import org.python.core.PyFunction;
 import org.python.core.PyObject;
+import org.python.core.PySystemState;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,10 @@ public class RunPython {
         Properties preprops = System.getProperties();
         PythonInterpreter.initialize(preprops, props, new String[0]);
         PythonInterpreter interpreter = new PythonInterpreter();
+//        // 下面是加入jython的库，需要指定jar包所在的路径。如果有自己写的包或者第三方，可以继续追加
+//        interpreter.exec("import sys");
+//        interpreter.exec("sys.path.append('C:/jython2.7.1/Lib')");
+//        interpreter.exec("sys.path.append('C:/jython2.7.1/Lib/site-packages')");
         try {
             interpreter.exec(script);
             // 假设python只有一个main方法，所有代码都在main方法内
@@ -48,7 +53,7 @@ public class RunPython {
             interpreter.close();
         } catch (Exception e) {
             e.printStackTrace();
-            rtnMap.put("error",e.getMessage());
+            rtnMap.put("error",e);
         }
         return rtnMap;
     }
@@ -97,25 +102,24 @@ public class RunPython {
     }
 
     /**
-     * 使用Runtime.getRuntime().exec()解析运行python
-     * @param command 解析的python代码字符串
+     * 使用Runtime.getRuntime().exec()解析运行python字符串代码（废弃）
+     *  从原理上看应该是无法实现的，因为是模拟cmd命令行的方式执行，而cmd只能执行命令，不能执行代码
+     * @param script 解析的python代码字符串
      * @param params python代码中的参数
      * @param charset 码表
      * @return
      */
-    public static Map<String,Object> runPythonByRuntime2(String command, String params, String charset) {
+    public static Map<String,Object> runPythonByRuntime2(String script, String params, String charset) {
         Map<String,Object> rtnMap = new HashMap<>();
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            /* 注意：cmd的格式：“python py文件的路径 参数...”
-             *  注意2：参数是字符串的时候，必须在首尾手动添加双引号（单引号都不行）
-             *  则下面的cmd=python E:/test/pythontest/Demo.py “params” */
-//            String cmd = String.format("python %s \"%s\"",command,params);
-            // 也可以用String[]，但是params传入前也需要手动在字符串前后加双引号
-            command = "\"" + command + "\"";
-            String cmd = String.format("python",command,params);
-            Process process = Runtime.getRuntime().exec(cmd);
+            /*
+             * 以下代码是无法实现的，*废弃*
+             */
+            script = "\"" + script + "\"";
+//            String cmd = String.format(script,params);
+            Process process = Runtime.getRuntime().exec(script);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
             ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
             stderr.start();
@@ -182,12 +186,29 @@ public class RunPython {
                 "    returnMsg[\"succParamMsg\"]=report\n" +
                 "    print(returnMsg)\n" +
                 "    return returnMsg";
+        String script2 = "import ast\n" +
+                "\n" +
+                "status=0\n" +
+                "succParamMsg = \"\"\n" +
+                "textMsg = \"\"\n" +
+                "errorMsg = \"\"\n" +
+                "returnMsg = {\"status\":status,\"succParamMsg\":succParamMsg,\"textMsg\":textMsg,\"errorMsg\":errorMsg}\n" +
+                "\n" +
+                "eval(\"__import__('os').system('whoami')\")\n" +
+                "\n" +
+                "def main(report):\n" +
+                "    ast.literal_eval(\"__import__('os').system('whoami')\")\n" +
+                "    returnMsg[\"succParamMsg\"] = report\n" +
+                "    print(returnMsg)\n" +
+                "    return returnMsg";
         String params = "\"this is a brand new day\r\nhappy~\"";
         String charset = "utf-8";
+        Map<String, Object> map = runPythonByJython(script2, params);
+        System.out.println("result:" + map.get("result"));
+        System.out.println("error:" + map.get("error"));
 //        Map<String, Object> map2 = runPythonByRuntime(command, params,charset);
-        Map<String, Object> map2 = runPythonByRuntime2(script, params,charset);
-        System.out.println("result:" + map2.get("result"));
-        System.out.println("error:" + map2.get("error"));
+//        System.out.println("result:" + map2.get("result"));
+//        System.out.println("error:" + map2.get("error"));
 
     }
 }

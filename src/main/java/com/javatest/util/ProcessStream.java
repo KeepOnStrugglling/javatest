@@ -19,7 +19,7 @@ public class ProcessStream extends Thread {
     private String streamType;
     private StringBuffer buf;
     private String charset;
-    private volatile boolean isStopped = false; // 用于判断线程是否执行完毕，用volatile保证线程安全
+    private volatile boolean isStopped = false; // 用于判断本线程是否执行完毕，用volatile保证线程安全
 
     public ProcessStream(InputStream inputStream, String streamType, String charset) {
         this.inputStream = inputStream;
@@ -42,24 +42,27 @@ public class ProcessStream extends Thread {
             bufferedReader.close();
         } catch (IOException e) {
             logger.error("Failed to successfully consume and display the input stream of type " + streamType + ".", e);
-//        } finally {
-//            this.isStopped = true;
-//            synchronized (this) {
-//                notify();
-//            }
+        } finally {
+            this.isStopped = true;
+            synchronized (this) {
+                notify();
+            }
         }
     }
 
+    /**
+     * 当主线程调用本方法获取本子线程的输出时，若本子线程还没执行完毕，主线程阻塞到子线程完成后再继续执行
+     */
     public String getContent() {
-//        if (!this.isStopped) {
-//            synchronized (this) {
-//                try {
-//                    wait();
-//                } catch (InterruptedException ignore) {
-//                    ignore.printStackTrace();
-//                }
-//            }
-//        }
+        if (!this.isStopped) {
+            synchronized (this) {
+                try {
+                    wait();
+                } catch (InterruptedException ignore) {
+                    ignore.printStackTrace();
+                }
+            }
+        }
         return this.buf.toString();
     }
 }
