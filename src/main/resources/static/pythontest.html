@@ -4,7 +4,33 @@
     <meta charset="UTF-8">
     <title>测试python解析</title>
 </head>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script type="text/javascript">
+    function send() {
+        var script = $("#script").val();
+        var code = $("#code").val();
+        $.ajax({
+            url:"/javatest/python/runPython",
+            data:{script:script,code:code},
+            type:"post",
+            dataType:"json",
+            contentType:"application/x-www-form-urlencoded;charset=utf-8",
+            success:function(result) {
+                console.log(result);
+                if(result.status=="success") {
+                    $("#text").val("result:" + result.result);
+                } else {
+                    alert("解析失败");
+                    $("#text").val("error:" + result.error);
+                }
+            }
+        })
+    }
+</script>
 <body>
-
+<textarea id="script" placeholder="请输入python脚本代码"></textarea><br/>
+<input type="text" id="code" placeholder="请输入需要解析的报文"/><br/>
+<button onclick="send()">解析</button><br/>
+<textarea id="text" placeholder="返回结果"></textarea>
 </body>
 </html>

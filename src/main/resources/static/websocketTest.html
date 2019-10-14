@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>websocket通讯</title>
 </head>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 <script>
     var socket;
     function openSocket() {
@@ -17,7 +17,7 @@
             //var socketUrl="${request.contextPath}/ws/"+$("#userId").val();
             var socketUrl="http://localhost:9010/javatest/ws/"+$("#userId").val();
             socketUrl=socketUrl.replace("https","ws").replace("http","ws");
-            console.log(socketUrl)
+            console.log(socketUrl);
             socket = new WebSocket(socketUrl);
             //打开事件
             socket.onopen = function() {

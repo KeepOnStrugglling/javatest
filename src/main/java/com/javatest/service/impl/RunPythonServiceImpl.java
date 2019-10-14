@@ -13,11 +13,11 @@ public class RunPythonServiceImpl implements RunPythonService {
     @Override
     public Map<String, Object> runPython(String code, String script) {
         Map<String, Object> rtnMap = RunPython.runPythonByJython(script, code);
-        if (StringUtils.isBlank((String) rtnMap.get("result"))) {
+        if (rtnMap.get("result")==null) {
             rtnMap.put("status","fail");
         } else {
             rtnMap.put("status","success");
         }
-        return null;
+        return rtnMap;
     }
 }
