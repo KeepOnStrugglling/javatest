@@ -1,8 +1,7 @@
 package com.javatest.service.impl;
 
 import com.javatest.service.RunPythonService;
-import com.javatest.util.RunPython;
-import org.apache.commons.lang.StringUtils;
+import com.javatest.util.RunPythonUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -12,7 +11,7 @@ public class RunPythonServiceImpl implements RunPythonService {
 
     @Override
     public Map<String, Object> runPython(String code, String script) {
-        Map<String, Object> rtnMap = RunPython.runPythonByJython(script, code);
+        Map<String, Object> rtnMap = RunPythonUtil.runPythonByJython(script, code);
         if (rtnMap.get("result")==null) {
             rtnMap.put("status","fail");
         } else {

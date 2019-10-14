@@ -3,7 +3,6 @@ package com.javatest.util;
 import org.python.core.Py;
 import org.python.core.PyFunction;
 import org.python.core.PyObject;
-import org.python.core.PySystemState;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,9 @@ import java.util.Properties;
  * @author hjw
  */
 
-public class RunPython {
+public class RunPythonUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(RunPython.class);
+    private static Logger logger = LoggerFactory.getLogger(RunPythonUtil.class);
 
     /**
      * 使用jython运行py代码，缺点：一旦引用第三方库容易报错，而即便手动设置第三方库，也有可能出现错误
