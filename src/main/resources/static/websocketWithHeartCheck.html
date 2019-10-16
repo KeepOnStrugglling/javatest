@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>websocket通讯2</title>
+</head>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script>
+    var lockReconnect = false;//避免重复连接
+    var wsUrl = "ws://localhost:9010/javatest/ws/"+$("#userId").val();		// websocket链接,项目地址
+    var ws;
+    var tt;
+
+    function createWebSocket(){
+        try {
+            if(typeof(WebSocket) == "undefined") {
+                console.log("您的浏览器不支持WebSocket");
+            }else {
+                console.log("您的浏览器支持WebSocket");
+                ws = new WebSocket(wsUrl);
+                websocketInit();
+            }
+        } catch (e) {
+            console.log('catch');
+            websocketReconnect(wsUrl);
+        }
+    }
+
+    function websocketInit() {
+        // 建立websocket连接成功触发事件
+        ws.onopen = function (evt) {
+            onOpen(evt);
+        };
+        // 断开websocket连接成功触发事件
+        ws.onclose = function (evt) {
+            websocketReconnect(wsUrl);
+            onClose(evt);
+        };
+        // 接收服务端数据时触发事件
+        ws.onmessage = function (evt) {
+            onMessage(evt);
+        };
+        // 通信发生错误时触发
+        ws.onerror = function (evt) {
+            websocketReconnect(wsUrl);
+            onError(evt);
+        };
+    }
+    
+    function onOpen(evt) {
+        console.log("websocket连接已建立");
+        //心跳检测重置
+        heartCheck.start();
+    }
+
+    function onClose(evt) {
+        console.log("websocket连接已关闭");
+    }
+
+    function onMessage(evt) {
+        console.log('接收消息: ' + evt.data);
+        // 对后端返回信息做业务操作
+        // var data = JSON.parse(evt.data);
+        // if (data.test && data.test =='hello') {		// 对后端传过来的数据正常处理
+        //
+        // }
+        // 拿到信息说明连接正常，心跳重置
+        heartCheck.start();
+    }
+
+    function onError(evt) {
+        console.log("websocket连接发生错误：" + evt.data);
+    }
+
+    // 断线重连
+    function websocketReconnect(url) {
+        if (lockReconnect) {       // 是否已经执行重连
+            return;
+        }
+        lockReconnect = true;
+        //没连接上会一直重连，设置延迟避免请求过多
+        tt && clearTimeout(tt);
+        tt = setTimeout(function () {
+            createWebSocket(url);
+            lockReconnect = false;
+        }, 5000);
+    }
+
+    // 心跳建立
+    var heartCheck = {
+        timeout: 30000,
+        timeoutObj: null,
+        serverTimeoutObj: null,
+        start: function () {
+            console.log('heartbeat start');
+            var self = this;
+            this.timeoutObj && clearTimeout(this.timeoutObj);
+            this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
+            this.timeoutObj = setTimeout(function () {
+                //发送测试信息，后端收到后，返回一个消息，
+                ws.send("$$ping$$");
+                self.serverTimeoutObj = setTimeout(function () {
+                    ws.close();
+                }, self.timeout);
+            }, this.timeout)
+        }
+    };
+
+    function sendMessage() {
+        if(typeof(WebSocket) == "undefined") {
+            console.log("您的浏览器不支持WebSocket");
+        }else {
+            console.log("您的浏览器支持WebSocket");
+            console.log('[{"toUserId":"'+$("#toUserId").val()+'","contentText":"'+$("#contentText").val()+'"}]');
+            ws.send('[{"toUserId":"'+$("#toUserId").val()+'","contentText":"'+$("#contentText").val()+'"}]');
+        }
+    }
+
+    // 进入页面后便建立websocket连接
+    createWebSocket(wsUrl);
+</script>
+<body>
+<p>【userId】：<div><input id="userId" name="userId" type="text" value="11"/></div>
+<p>【toUserId】：<div><input id="toUserId" name="toUserId" type="text" value="22"/></div>
+<p>【toUserId内容】：<div><input id="contentText" name="contentText" type="text" value="abc"/></div>
+<p>【操作】：<div><input type="button" onclick="sendMessage()"/>发送消息</div>
+</body>
+
+</html>

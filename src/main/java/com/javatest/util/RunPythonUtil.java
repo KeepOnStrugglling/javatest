@@ -30,6 +30,7 @@ public class RunPythonUtil {
      * @return
      */
     public static Map<String,Object> runPythonByJython(String script, String params){
+        System.out.println("*****************使用jython解析*****************");
         Map<String,Object> rtnMap = new HashMap<>();
 
         Properties props = new Properties();
@@ -52,7 +53,7 @@ public class RunPythonUtil {
             interpreter.close();
         } catch (Exception e) {
             e.printStackTrace();
-            rtnMap.put("error",e);
+            rtnMap.put("error",e.toString());
         }
         return rtnMap;
     }
@@ -65,6 +66,7 @@ public class RunPythonUtil {
      * @return
      */
     public static Map<String,Object> runPythonByRuntime(String command, String params, String charset) {
+        System.out.println("*****************使用runtime解析*****************");
         Map<String,Object> rtnMap = new HashMap<>();
         String line;
         StringBuffer rtnSb = new StringBuffer();
@@ -108,40 +110,40 @@ public class RunPythonUtil {
      * @param charset 码表
      * @return
      */
-    public static Map<String,Object> runPythonByRuntime2(String script, String params, String charset) {
-        Map<String,Object> rtnMap = new HashMap<>();
-        String line;
-        StringBuffer rtnSb = new StringBuffer();
-        try {
-            /*
-             * 以下代码是无法实现的，*废弃*
-             */
-            script = "\"" + script + "\"";
-//            String cmd = String.format(script,params);
-            Process process = Runtime.getRuntime().exec(script);
-            // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
-            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
-            stderr.start();
-            // 获取标准输出流的内容
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
-            while ((line = stdout.readLine()) != null) {
-                rtnSb.append(line).append("\r\n");
-            }
-            rtnMap.put("result",rtnSb.toString());
-            rtnMap.put("error",stderr.getContent());
-            //关闭流
-            stdout.close();
-            int status = process.waitFor();
-            if (status != 0) {
-                System.out.println("return value:"+status);
-                logger.info("event:{}", "RunExeForWindows",process.exitValue());
-            }
-            process.destroy();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtnMap;
-    }
+//    public static Map<String,Object> runPythonByRuntime2(String script, String params, String charset) {
+//        Map<String,Object> rtnMap = new HashMap<>();
+//        String line;
+//        StringBuffer rtnSb = new StringBuffer();
+//        try {
+//            /*
+//             * 以下代码是无法实现的，*废弃*
+//             */
+//            script = "\"" + script + "\"";
+////            String cmd = String.format(script,params);
+//            Process process = Runtime.getRuntime().exec(script);
+//            // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
+//            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
+//            stderr.start();
+//            // 获取标准输出流的内容
+//            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
+//            while ((line = stdout.readLine()) != null) {
+//                rtnSb.append(line).append("\r\n");
+//            }
+//            rtnMap.put("result",rtnSb.toString());
+//            rtnMap.put("error",stderr.getContent());
+//            //关闭流
+//            stdout.close();
+//            int status = process.waitFor();
+//            if (status != 0) {
+//                System.out.println("return value:"+status);
+//                logger.info("event:{}", "RunExeForWindows",process.exitValue());
+//            }
+//            process.destroy();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return rtnMap;
+//    }
 
     /**
      * 附测试代码
