@@ -7,9 +7,10 @@
 <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 <script>
     var lockReconnect = false;//避免重复连接
-    var wsUrl = "ws://localhost:9010/javatest/ws/"+$("#userId").val();		// websocket链接,项目地址
     var ws;
     var tt;
+    var sid = random(1,100000);    // 这里将页面的sid写死，重连的时候会请求同样的sid，容易出现重复性问题，最好是由后端提供去重后的sid
+    var wsUrl = "ws://localhost:9010/javatest/ws/" + sid;		// websocket链接,项目地址
 
     function createWebSocket(){
         try {
@@ -17,6 +18,7 @@
                 console.log("您的浏览器不支持WebSocket");
             }else {
                 console.log("您的浏览器支持WebSocket");
+                console.log("sid：" + sid);
                 ws = new WebSocket(wsUrl);
                 websocketInit();
             }
@@ -58,12 +60,15 @@
     }
 
     function onMessage(evt) {
-        console.log('接收消息: ' + evt.data);
-        // 对后端返回信息做业务操作
-        // var data = JSON.parse(evt.data);
-        // if (data.test && data.test =='hello') {		// 对后端传过来的数据正常处理
-        //
-        // }
+        // 心跳不需要处理
+        if (evt.data==="1$") {
+            console.log('heartbeat！！！');    // 正式使用时要去掉
+        } else {
+            // 对后端返回信息做业务操作
+            console.log('接收消息: ' + evt.data);
+            var msg = $("#message").html() + evt.data+'\n';
+            $("#message").html(msg);      // 根据业务需求调整
+        }
         // 拿到信息说明连接正常，心跳重置
         heartCheck.start();
     }
@@ -92,38 +97,45 @@
         timeoutObj: null,
         serverTimeoutObj: null,
         start: function () {
-            console.log('heartbeat start');
+            console.log('heartbeat...');    // 正式使用时要去掉
             var self = this;
             this.timeoutObj && clearTimeout(this.timeoutObj);
             this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
             this.timeoutObj = setTimeout(function () {
-                //发送测试信息，后端收到后，返回一个消息，
-                ws.send("$$ping$$");
-                self.serverTimeoutObj = setTimeout(function () {
-                    ws.close();
+                //这里发送一个心跳，后端收到后，返回一个心跳消息，
+                //onmessage拿到返回的心跳就说明连接正常
+                ws.send("$$");
+                self.serverTimeoutObj = setTimeout(function () {//如果超过一定时间还没重置，说明后端主动断开了
+                    ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
                 }, self.timeout);
             }, this.timeout)
         }
     };
 
+    // 主动发送消息
     function sendMessage() {
         if(typeof(WebSocket) == "undefined") {
             console.log("您的浏览器不支持WebSocket");
         }else {
             console.log("您的浏览器支持WebSocket");
-            console.log('[{"toUserId":"'+$("#toUserId").val()+'","contentText":"'+$("#contentText").val()+'"}]');
-            ws.send('[{"toUserId":"'+$("#toUserId").val()+'","contentText":"'+$("#contentText").val()+'"}]');
+            console.log('{"toSid":"'+$("#toSid").val()+'","content":"'+$("#content").val()+'"}');
+            ws.send('{"toSid":"'+$("#toSid").val()+'","content":"'+$("#content").val()+'"}');
         }
+    }
+
+    // 创建随机数作为sid，但是存在重复性问题
+    function random(lower, upper) {
+        return Math.floor(Math.random() * (upper - lower+1)) + lower;
     }
 
     // 进入页面后便建立websocket连接
     createWebSocket(wsUrl);
 </script>
 <body>
-<p>【userId】：<div><input id="userId" name="userId" type="text" value="11"/></div>
-<p>【toUserId】：<div><input id="toUserId" name="toUserId" type="text" value="22"/></div>
-<p>【toUserId内容】：<div><input id="contentText" name="contentText" type="text" value="abc"/></div>
-<p>【操作】：<div><input type="button" onclick="sendMessage()"/>发送消息</div>
+<p>【toSid】：<div><input id="toSid" name="toSid" type="text"/></div>
+<p>【发送内容】：<div><input id="content" name="content" type="text" value="abc"/></div>
+<p>【操作】：<div><input type="button" onclick="sendMessage()" value="发送消息"/><br/>
+<p>【接收内容】：<div><textarea id="message"></textarea></div>
 </body>
 
 </html>

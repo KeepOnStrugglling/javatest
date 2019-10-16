@@ -1,6 +1,7 @@
 package com.javatest.controller;
 
 import com.javatest.websocket.WebSocketServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,9 @@ import java.util.Map;
 @RequestMapping("/websocket")
 public class WebSocketController {
 
+    @Autowired
+    private WebSocketServer webSocketServer;
+
     //页面请求
     @GetMapping("/socket/{cid}")
     public ModelAndView socket(@PathVariable String cid) {
@@ -29,7 +33,7 @@ public class WebSocketController {
     public Map<String,Object> pushToWeb(@PathVariable String cid, String message) {
         Map<String,Object> result = new HashMap<>();
         try {
-            WebSocketServer.sendInfo(message,cid);
+            webSocketServer.sendInfo(message,cid);
             result.put("status","success");
         } catch (IOException e) {
             e.printStackTrace();
