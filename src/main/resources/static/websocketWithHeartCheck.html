@@ -7,6 +7,7 @@
 <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 <script>
     var lockReconnect = false;//避免重复连接
+    var closeConnect = false;//用于判断是否为手动断开
     var ws;
     var tt;
     var sid = random(1,100000);    // 这里将页面的sid写死，重连的时候会请求同样的sid，容易出现重复性问题，最好是由后端提供去重后的sid
@@ -19,6 +20,7 @@
             }else {
                 console.log("您的浏览器支持WebSocket");
                 console.log("sid：" + sid);
+                closeConnect = false;       // 每次创建websocket连接都初始化为false
                 ws = new WebSocket(wsUrl);
                 websocketInit();
             }
@@ -35,7 +37,9 @@
         };
         // 断开websocket连接成功触发事件
         ws.onclose = function (evt) {
-            websocketReconnect(wsUrl);
+            if (!closeConnect) {    // 不是手动关闭才进行重连
+                websocketReconnect(wsUrl);
+            }
             onClose(evt);
         };
         // 接收服务端数据时触发事件
@@ -123,9 +127,27 @@
         }
     }
 
+    //主动关闭连接
+    function closeConn() {
+        closeConnect = true;
+        ws.close();
+    }
+
     // 创建随机数作为sid，但是存在重复性问题
     function random(lower, upper) {
         return Math.floor(Math.random() * (upper - lower+1)) + lower;
+    }
+
+    // 由于后端没有做sid重复性处理，所以由前端限制手动开关websocket按钮次数
+    function closewebsocket() {
+        closeConn();
+        $("#open").show();
+        $("#close").hide();
+    }
+    function openWebSocket() {
+        createWebSocket();
+        $("#open").hide();
+        $("#close").show();
     }
 
     // 进入页面后便建立websocket连接
@@ -135,6 +157,8 @@
 <p>【toSid】：<div><input id="toSid" name="toSid" type="text"/></div>
 <p>【发送内容】：<div><input id="content" name="content" type="text" value="abc"/></div>
 <p>【操作】：<div><input type="button" onclick="sendMessage()" value="发送消息"/><br/>
+<p>【操作】：<div><input type="button" id="close" onclick="closewebsocket()" value="手动关闭websocket"/><br/>
+<p>【操作】：<div><input type="button" id="open" hidden onclick="openWebSocket()" value="手动开启websocket"/><br/>
 <p>【接收内容】：<div><textarea id="message"></textarea></div>
 </body>
 
