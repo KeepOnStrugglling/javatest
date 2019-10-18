@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax长轮询和短轮询</title>
+</head>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+
+    // 使用定时器实现短轮询
+    function shortPolling() {
+        setInterval(shortAjax,5000);
+    }
+
+    function shortAjax() {
+        $.ajax({
+            type:"get",
+            url:"/javatest/student/findOneShort/" + 10001,
+            dataType:"json",
+            success:function(result) {
+                var msg = $("#message").html() + result.id+':'+result.name+'='+result.score+'\n';
+                $("#message").html(msg);
+            },
+            timeout:10000,  //测试超时10s会不会报错，实际可以调大一点
+            error:function (error) {
+                console.log("ajax执行失败");
+            }
+        })
+    }
+
+    // 长轮询
+    function longPolling() {
+        $.ajax({
+            type:"get",
+            url:"/javatest/student/findOneLong/" + 10001,
+            dataType:"json",
+            success:function(result) {
+                var msg = $("#message").html() + result.id+':'+result.name+'='+result.score+'\n';
+                $("#message").html(msg);
+                longPolling();     // 正常获取数据马上发起新请求
+            },
+            timeout:15000,  //测试超时15s会不会报错，实际可以调大一点
+            error:function (error) {
+                console.log("ajax执行失败");
+                longPolling();     // 超时或报错则重新发起请求
+            }
+        })
+    }
+</script>
+<body>
+<p>【操作】：<div><input type="button" id="short" onclick="shortPolling()" value="ajax短轮询"/><br/>
+<p>【操作】：<div><input type="button" id="long" onclick="longPolling()" value="ajax长轮询"/><br/>
+<p>【接收内容】：<div><textarea id="message" rows="10" cols="30"></textarea></div>
+</body>
+</html>
