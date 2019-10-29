@@ -34,3 +34,7 @@ server:
 logging:
   level:
     com.javatest: debug
+endpoints:
+  actuator:
+    enabled: true
+    sensitive: false
