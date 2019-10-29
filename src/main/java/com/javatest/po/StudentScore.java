@@ -42,4 +42,12 @@ public class StudentScore implements Serializable {
         this.score = score;
     }
 
+    @Override
+    public String toString() {
+        return "StudentScore{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", score=" + score +
+                '}';
+    }
 }

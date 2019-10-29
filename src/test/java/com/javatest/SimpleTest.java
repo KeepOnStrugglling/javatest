@@ -2,6 +2,7 @@ package com.javatest;
 
 import com.javatest.dao.StudentScoreMapper;
 import com.javatest.po.StudentScore;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,11 @@ public class SimpleTest {
         for (int i = 0; i <studentScores.size() ; i++) {
             System.out.println(studentScores.get(i).getId()+"="+studentScores.get(i).getName()+"="+studentScores.get(i).getScore());
         }
+    }
+
+    @Test
+    public void test7(){
+        String[] logoutOrderArr = StringUtils.split(null,",");
+        System.out.println(logoutOrderArr);
     }
 }
