@@ -25,4 +25,25 @@ public class StudentScoreServiceImpl implements StudentScoreService {
     public List<StudentScore> queryStudentScore(StudentScore studentScore) {
         return mapper.queryStudentScore(studentScore);
     }
+
+    /**
+     * 这个是用来测试方法调用传参是地址值
+     * @param list
+     * @return
+     */
+    @Override
+    public int variableTest(List<String> list) {
+        list.add("11");
+        return 0;
+    }
+
+    /**
+     * 这个是用来测试方法调用传参是地址值
+     * @param c
+     */
+    @Override
+    public void variableTest2(int c) {
+        c = 2;
+        System.out.println("method2 c=" + c);
+    }
 }

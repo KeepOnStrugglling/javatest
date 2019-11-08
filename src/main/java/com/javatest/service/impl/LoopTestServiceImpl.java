@@ -2,16 +2,22 @@ package com.javatest.service.impl;
 
 import com.javatest.dao.StudentScoreMapper;
 import com.javatest.po.StudentScore;
+import com.javatest.service.StudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class LoopTestServiceImpl {
     @Autowired
     private StudentScoreMapper studentScoreMapper;
+    @Autowired
+    private StudentScoreService service;
 
     /**
      * 结论：没有开启事务，每次循环都会插入一条数据
@@ -291,5 +297,53 @@ public class LoopTestServiceImpl {
         s.setScore(99);
         studentScoreMapper.updateByPrimaryKeySelective(s);
         System.out.println(studentScoreMapper.selectByPrimaryKey(10088L));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 这个是用来测试方法调用传参是地址值，跟上面的循环没有关系
+     */
+    public void variableTest() {
+        List<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        List<String> newList = list;
+        System.out.print("list1:");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.print(list.get(i) + i + ";");
+        }
+        System.out.println();
+        service.variableTest(list);
+        System.out.print("list2:");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.print(list.get(i) + i + ";");
+        }
+        System.out.println();
+        System.out.print("newList:");
+        for (int i = 0; i < newList.size(); i++) {
+            System.out.print(newList.get(i) + i + ";");
+        }
+        System.out.println();
+
+        int c = 1;
+        System.out.println("c=" + c);
+        service.variableTest2(c);
+        System.out.println("c=" + c);
+
     }
 }

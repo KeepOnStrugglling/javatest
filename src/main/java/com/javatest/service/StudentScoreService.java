@@ -9,4 +9,8 @@ public interface StudentScoreService {
     StudentScore selectByPrimaryKey(Long id);
 
     List<StudentScore> queryStudentScore(StudentScore studentScore);
+
+    int variableTest(List<String> list);
+
+    void variableTest2(int c);
 }
