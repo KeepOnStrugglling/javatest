@@ -41,7 +41,7 @@ public class RunPythonServiceImpl implements RunPythonService {
     public String saveScript2Py(String script) {
         String command = null;
         try {
-            File file = new File( configProperties.getPythonFilePath()+ new Date().getTime() + ".py");
+            File file = new File( configProperties.getPythonFilePath() + "py" + new Date().getTime() + ".py");
             if (!file.exists()) {
                 file.createNewFile();
             }
