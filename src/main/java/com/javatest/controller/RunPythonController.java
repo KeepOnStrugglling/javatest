@@ -3,11 +3,10 @@ package com.javatest.controller;
 import com.javatest.service.RunPythonService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,5 +22,20 @@ public class RunPythonController {
             return null;
         }
         return service.runPython(code,script);
+    }
+
+    @RequestMapping("/runPythonFile")
+    public Map<String,Object> runPythonFile(String script,String code) {
+        Map<String,Object> result = new HashMap<>();
+        if (StringUtils.isBlank(script) || StringUtils.isBlank(code)) {
+            return null;
+        }
+        String command = service.saveScript2Py(script);
+        if (command == null) {
+           result.put("status","fail");
+           return result;
+        } else {
+            return service.runPythonByRuntime(command,code);
+        }
     }
 }

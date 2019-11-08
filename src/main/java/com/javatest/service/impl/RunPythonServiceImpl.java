@@ -1,17 +1,69 @@
 package com.javatest.service.impl;
 
 import com.javatest.service.RunPythonService;
+import com.javatest.util.ConfigProperties;
 import com.javatest.util.RunPythonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 @Service
 public class RunPythonServiceImpl implements RunPythonService {
 
+    @Autowired
+    private ConfigProperties configProperties;
+
     @Override
     public Map<String, Object> runPython(String code, String script) {
         Map<String, Object> rtnMap = RunPythonUtil.runPythonByJython(script, code);
+        if (rtnMap.get("result")==null) {
+            rtnMap.put("status","fail");
+        } else {
+            rtnMap.put("status","success");
+        }
+        return rtnMap;
+    }
+
+    /**
+     * 将脚本代码保存为py文件
+     * @param script
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String saveScript2Py(String script) {
+        String command = null;
+        try {
+            File file = new File( configProperties.getPythonFilePath()+ new Date().getTime() + ".py");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            command = file.getAbsolutePath();
+            FileWriter fw = new FileWriter(file);
+            fw.write(script);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return command;
+    }
+
+    /**
+     * 根据保存的py文件进行代码解析
+     * @param command
+     * @param code
+     * @return
+     */
+    @Override
+    public Map<String, Object> runPythonByRuntime(String command, String code) {
+        Map<String, Object> rtnMap = RunPythonUtil.runPythonByRuntime(command, code,"GBK");
         if (rtnMap.get("result")==null) {
             rtnMap.put("status","fail");
         } else {
