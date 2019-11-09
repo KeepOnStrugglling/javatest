@@ -95,10 +95,13 @@ public class RunPythonUtil {
         StringBuffer rtnSb = new StringBuffer();
         try {
             /* 注意：cmd的格式：“python py文件的路径 参数...”
-             *  注意2：参数是字符串的时候，必须在首尾手动添加双引号（单引号都不行）
-             *  则下面的cmd=python E:/test/pythontest/Demo.py “params” */
-//            String cmd = String.format("python %s \"%s\"",command,params);
+             *  注意2：参数是字符串的时候，有可能会出现参数只解析第一个词的情况，此时必须在整个字符串参数首尾手动添加双引号（单引号都不行）
+             *  则下面的cmd=python E:/test/pythontest/Demo.py “params”
+             */
+
+            //String cmd = String.format("python %s \"%s\"",command,params);
             // 也可以用String[]，但是params传入前也需要手动在字符串前后加双引号
+
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
@@ -128,7 +131,7 @@ public class RunPythonUtil {
     }
 
     /**
-     * 使用Runtime.getRuntime().exec()解析运行python，如果频繁请求，可能会增大磁盘io压力
+     * 使用Runtime.getRuntime().exec()解析运行python，如果频繁请求，可能会增大磁盘io压力和影响磁盘寿命
      * @param script 解析的python代码,会自动将代码保存成文件
      * @param params python代码中的参数
      * @param charset 码表
@@ -166,9 +169,6 @@ public class RunPythonUtil {
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            /* 注意：cmd的格式：“python py文件的路径 参数...”
-             *  注意2：参数是字符串的时候，必须在首尾手动添加双引号（单引号也不行） */
-            // params传入前需要手动在字符串前后加双引号
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
