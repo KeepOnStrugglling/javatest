@@ -24,8 +24,8 @@ public class RunPythonController {
         return service.runPython(code,script);
     }
 
-    @RequestMapping("/runPythonFile")
-    public Map<String,Object> runPythonFile(String script,String code) {
+    @RequestMapping("/runPythonByRuntime")
+    public Map<String,Object> runPythonByRuntime(String script,String code) {
         Map<String,Object> result = new HashMap<>();
         if (StringUtils.isBlank(script) || StringUtils.isBlank(code)) {
             return null;
@@ -37,5 +37,16 @@ public class RunPythonController {
         } else {
             return service.runPythonByRuntime(command,code);
         }
+    }
+
+    @RequestMapping("/runPythonFile")
+    public Map<String,Object> runPythonFile(String script, String code, String charset) {
+        if (StringUtils.isBlank(script) || StringUtils.isBlank(code)) {
+            return null;
+        }
+        if (StringUtils.isBlank(charset)) {
+            charset = "GBK";    // windows环境下命令行用utf-8遇到中文会乱码，建议win环境下用GBK
+        }
+        return service.runPythonFile(script,code,charset);
     }
 }

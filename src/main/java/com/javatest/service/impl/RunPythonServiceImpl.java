@@ -71,4 +71,21 @@ public class RunPythonServiceImpl implements RunPythonService {
         }
         return rtnMap;
     }
+
+    /**
+     * RunPythonUtil中提供保存和执行python脚本的方法
+     * @param script
+     * @param code
+     * @return
+     */
+    @Override
+    public Map<String, Object> runPythonFile(String script, String code, String charset) {
+        Map<String, Object> rtnMap = RunPythonUtil.runPythonFIleByRuntime(script, code,charset);
+        if (rtnMap.get("result")==null) {
+            rtnMap.put("status","fail");
+        } else {
+            rtnMap.put("status","success");
+        }
+        return rtnMap;
+    }
 }

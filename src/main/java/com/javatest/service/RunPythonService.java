@@ -9,4 +9,6 @@ public interface RunPythonService {
     String saveScript2Py(String script);
 
     Map<String, Object> runPythonByRuntime(String command, String code);
+
+    Map<String, Object> runPythonFile(String script, String code, String charset);
 }

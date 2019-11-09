@@ -6,9 +6,12 @@ import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import javax.annotation.PostConstruct;
+import java.io.*;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,9 +22,27 @@ import java.util.Properties;
  * @author hjw
  */
 
+@Component
 public class RunPythonUtil {
 
     private static Logger logger = LoggerFactory.getLogger(RunPythonUtil.class);
+
+    /**
+     * 工具类的方法都是静态方法，在静态方法中调用ioc容器中的bean时需要特别的改造
+     */
+    @Autowired
+    private ConfigProperties configProperties;
+    private static RunPythonUtil runPythonUtil;
+
+    public void setConfigProperties(ConfigProperties configProperties) {
+        this.configProperties = configProperties;
+    }
+
+    @PostConstruct
+    public void init() {
+        runPythonUtil = this;
+        runPythonUtil.configProperties = this.configProperties;
+    }
 
     /**
      * 使用jython运行py代码，缺点：一旦引用第三方库容易报错，而即便手动设置第三方库，也有可能出现错误
@@ -53,6 +74,7 @@ public class RunPythonUtil {
             interpreter.close();
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("jython解析报错：" + e.getMessage());
             rtnMap.put("error",e.toString());
         }
         System.out.println("*****************完成jython解析*****************");
@@ -99,8 +121,87 @@ public class RunPythonUtil {
             process.destroy();
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("runtime解析报错：" + e.getMessage());
         }
         System.out.println("*****************完成runtime解析*****************");
+        return rtnMap;
+    }
+
+    /**
+     * 使用Runtime.getRuntime().exec()解析运行python，如果频繁请求，可能会增大磁盘io压力
+     * @param script 解析的python代码,会自动将代码保存成文件
+     * @param params python代码中的参数
+     * @param charset 码表
+     * @return
+     */
+    public static Map<String,Object> runPythonFIleByRuntime(String script, String params, String charset) {
+        System.out.println("*****************使用runtime解析,包含缓存文件*****************");
+
+        Map<String,Object> rtnMap = new HashMap<>();
+        // 缓存py文件
+        String command = null;
+        FileWriter fw = null;
+        File file = null;
+        try {
+            file = new File( runPythonUtil.configProperties.getPythonFilePath() + "py" + new Date().getTime() + ".py");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            command = file.getAbsolutePath();
+            fw = new FileWriter(file);
+            fw.write(script);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("runtime解析报错：" + e.getMessage());
+            rtnMap.put("errorMsg", "无法保存py文件！");
+            return rtnMap;
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        // 用刚才缓存的py文件解析代码
+        String line;
+        StringBuffer rtnSb = new StringBuffer();
+        try {
+            /* 注意：cmd的格式：“python py文件的路径 参数...”
+             *  注意2：参数是字符串的时候，必须在首尾手动添加双引号（单引号也不行） */
+            // params传入前需要手动在字符串前后加双引号
+            String[] cmd = new String[]{"python",command,params};
+            Process process = Runtime.getRuntime().exec(cmd);
+            // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
+            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
+            stderr.start();
+            // 获取标准输出流的内容
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
+            while ((line = stdout.readLine()) != null) {
+                rtnSb.append(line).append("\r\n");
+            }
+            rtnMap.put("result",rtnSb.toString());
+            rtnMap.put("error",stderr.getContent());
+            //关闭流
+            stdout.close();
+            int status = process.waitFor();
+            if (status != 0) {
+                System.out.println("return value:"+status);
+                logger.info("event:{}", "RunExeForWindows",process.exitValue());
+            }
+            process.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("runtime解析报错：" + e.getMessage());
+        }
+        // 如果只是一次性的执行，可以将生成的py文件删除，看情况
+        // 使用file的delete方法时，一定要判断清楚文件路径。这样的删除很难恢复，万一路径是磁盘路径或者重要文件夹路径，等着哭吧
+        try {
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("runtime解析报错：" + e.getMessage());
+        }
+        System.out.println("*****************完成runtime解析,包含缓存文件*****************");
         return rtnMap;
     }
 
