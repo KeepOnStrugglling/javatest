@@ -1,5 +1,7 @@
 package com.javatest.service.impl;
 
+import com.javatest.dao.StudentScoreMapper;
+import com.javatest.po.StudentScore;
 import com.javatest.service.RunPythonService;
 import com.javatest.util.ConfigProperties;
 import com.javatest.util.RunPythonUtil;
@@ -18,6 +20,8 @@ public class RunPythonServiceImpl implements RunPythonService {
 
     @Autowired
     private ConfigProperties configProperties;
+    @Autowired
+    private StudentScoreMapper studentScoreMapper;
 
     @Override
     public Map<String, Object> runPython(String code, String script) {
@@ -79,12 +83,21 @@ public class RunPythonServiceImpl implements RunPythonService {
      */
     @Override
     public Map<String, Object> runPythonFile(String script, String code, String charset) {
-        Map<String, Object> rtnMap = RunPythonUtil.runPythonFIleByRuntime(script, code,charset);
+        Map<String, Object> rtnMap = RunPythonUtil.runPythonFileByRuntime(script, code,charset);
         if (rtnMap.get("result")==null) {
             rtnMap.put("status","fail");
         } else {
             rtnMap.put("status","success");
         }
         return rtnMap;
+    }
+
+    @Override
+    public void doUpdate() {
+        StudentScore s = new StudentScore();
+        s.setId(10015L);
+        s.setScore(99);
+        studentScoreMapper.updateByPrimaryKeySelective(s);
+        System.out.println(studentScoreMapper.selectByPrimaryKey(10015L));
     }
 }

@@ -137,7 +137,7 @@ public class RunPythonUtil {
      * @param charset 码表
      * @return
      */
-    public static Map<String,Object> runPythonFIleByRuntime(String script, String params, String charset) {
+    public static Map<String,Object> runPythonFileByRuntime(String script, String params, String charset) {
         System.out.println("*****************使用runtime解析,包含缓存文件*****************");
 
         Map<String,Object> rtnMap = new HashMap<>();

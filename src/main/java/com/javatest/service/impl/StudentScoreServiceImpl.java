@@ -46,4 +46,13 @@ public class StudentScoreServiceImpl implements StudentScoreService {
         c = 2;
         System.out.println("method2 c=" + c);
     }
+
+    @Override
+    public void doUpdate() {
+        StudentScore s = new StudentScore();
+        s.setId(10015L);
+        s.setScore(99);
+        mapper.updateByPrimaryKeySelective(s);
+        System.out.println(mapper.selectByPrimaryKey(10015L));
+    }
 }

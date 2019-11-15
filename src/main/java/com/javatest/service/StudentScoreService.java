@@ -13,4 +13,6 @@ public interface StudentScoreService {
     int variableTest(List<String> list);
 
     void variableTest2(int c);
+
+    void doUpdate();
 }

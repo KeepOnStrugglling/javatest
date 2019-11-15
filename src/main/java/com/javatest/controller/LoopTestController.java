@@ -74,8 +74,28 @@ public class LoopTestController {
         return "ok";
     }
 
-    // 这个是用来测试方法调用传参是地址值，跟上面的循环没有关系
     @RequestMapping("/test13")
+    public String test13(){
+        loopTestService.loopTest13();
+        return "ok";
+    }
+
+    @RequestMapping("/test14")
+    public String test14(){
+        loopTestService.loopTest14();
+        return "ok";
+    }
+
+    @RequestMapping("/test15")
+    public String test15(){
+        loopTestService.loopTest15();
+        return "ok";
+    }
+
+
+
+    // 这个是用来测试方法调用传参是地址值，跟上面的循环没有关系
+    @RequestMapping("/variableTest")
     public String variableTest(){
         loopTestService.variableTest();
         return "ok";

@@ -2,6 +2,7 @@ package com.javatest.service.impl;
 
 import com.javatest.dao.StudentScoreMapper;
 import com.javatest.po.StudentScore;
+import com.javatest.service.RunPythonService;
 import com.javatest.service.StudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class LoopTestServiceImpl {
     @Autowired
     private StudentScoreMapper studentScoreMapper;
     @Autowired
+    private StudentScoreService studentScoreService;
+    @Autowired
     private StudentScoreService service;
+    @Autowired
+    private RunPythonService runPythonService;
 
     /**
      * 结论：没有开启事务，每次循环都会插入一条数据
@@ -273,7 +277,8 @@ public class LoopTestServiceImpl {
     }
 
     /**
-     * 全部回滚，报错跳出循环，报错后仍会继续循环体后面的代码
+     * 全部回滚，报错跳出循环，报错后仍会继续循环体后面的代码，但后面的代码同样回滚
+     * 原因：TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();会将整个方法的事务全部回滚
      */
     @Transactional
     public void loopTest12() {
@@ -293,17 +298,88 @@ public class LoopTestServiceImpl {
         }
         System.out.println("count:" + count);
         StudentScore s = new StudentScore();
-        s.setId(10088L);
+        s.setId(10015L);
         s.setScore(99);
         studentScoreMapper.updateByPrimaryKeySelective(s);
-        System.out.println(studentScoreMapper.selectByPrimaryKey(10088L));
+        System.out.println(studentScoreMapper.selectByPrimaryKey(10015L));
     }
 
+    /**
+     * 同loopTest12，同类的方法相互调用事务会传播，还是会回滚
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void loopTest13() {
+        int count = 0;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        System.out.println("count:" + count);
+        doUpdate();
+    }
 
+    private void doUpdate() {
+        StudentScore s = new StudentScore();
+        s.setId(10015L);
+        s.setScore(99);
+        studentScoreMapper.updateByPrimaryKeySelective(s);
+        System.out.println(studentScoreMapper.selectByPrimaryKey(10015L));
+    }
 
+    /**
+     * 同loopTest12，即便后续的方法放在另外一个事务管理的service，还是会回滚
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void loopTest14() {
+        int count = 0;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        System.out.println("count:" + count);
+        studentScoreService.doUpdate();
+    }
 
-
-
+    /**
+     * 同loopTest12，即便后续的方法放在另外一个非事务管理的service，还是会回滚
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void loopTest15() {
+        int count = 0;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        System.out.println("count:" + count);
+        runPythonService.doUpdate();
+    }
 
 
 
