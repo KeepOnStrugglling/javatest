@@ -97,3 +97,4 @@ def readTitle(titleStr):
 
 readTitle(" 资源名称                  资源使用百分比  使用的资源数  资源最大数  模块状态  模块号  资源地址          资源大小  分配数量公式           ")
 
+def readMultiContent():

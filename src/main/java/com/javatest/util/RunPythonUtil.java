@@ -102,7 +102,7 @@ public class RunPythonUtil {
 
             //String cmd = String.format("python %s \"%s\"",command,params);
             // 也可以用String[]，但是params传入前也需要手动在字符串前后加双引号
-
+            params = "\"" + params + "\"";
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
@@ -172,6 +172,7 @@ public class RunPythonUtil {
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
+            params = "\"" + params + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
@@ -267,6 +268,7 @@ public class RunPythonUtil {
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
+            feedback = "\"" + feedback + "\"";
             String[] cmd = new String[]{"python",command,packetName,feedback};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
