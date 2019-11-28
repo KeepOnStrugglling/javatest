@@ -238,7 +238,7 @@ public class RunPythonUtil {
             }
         } else {
             if (StringUtils.isBlank(packetName)) {
-                packetName = "py" + new Date().getTime() + ".py";
+                packetName = "py" + new Date().getTime();
             }
             try {
                 file = new File(runPythonUtil.configProperties.getPythonFilePath() + packetName + ".py");
