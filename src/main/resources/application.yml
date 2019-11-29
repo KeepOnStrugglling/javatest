@@ -30,7 +30,8 @@ spring:
         login-password: 1qaz@WSX
 server:
   port: 9010
-  context-path: /javatest
+  servlet:
+    context-path: /javatest
 logging:
   level:
     com.javatest: debug

@@ -1,7 +1,7 @@
 # javatest
 本仓库主要对流行的技术做试验和记录测试记录，
 ## 测试环境
-idea17.3/18.3，mysql5.7，easycode插件，springboot1.5.8（有可能会往2.x版本迁移）
+idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 
 ## 目前已试验的技术
 1. websocket的简单实现，补充断线重连机制；
@@ -12,4 +12,5 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot1.5.8（有可能会往2.x
 6. 研究通过枚举名称获取对应的枚举值；
 
 ## TODO
-
+1. 研究hutool；
+2. 研究设计模式；
