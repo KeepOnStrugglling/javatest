@@ -135,7 +135,7 @@ public class RunPythonUtil {
      * 使用Runtime.getRuntime().exec()解析运行python，如果频繁请求，可能会增大磁盘io压力和影响磁盘寿命
      * @param script 解析的python代码,会自动将代码保存成文件
      * @param params python代码中的参数
-     * @param charset 码表
+     * @param charset 指定系统生成文件所用码表
      * @return
      */
     public static Map<String,Object> runPythonFileByRuntime(String script, String params, String charset) {
@@ -144,27 +144,60 @@ public class RunPythonUtil {
         Map<String,Object> rtnMap = new HashMap<>();
         // 缓存py文件
         String command = null;
-        FileWriter fw = null;
+        BufferedWriter bw = null;
         File file = null;
+        if (StringUtils.isBlank(charset)) {
+            charset = "UTF-8";
+        }
         try {
             file = new File( runPythonUtil.configProperties.getPythonFilePath() + "py" + new Date().getTime() + ".py");
             if (!file.exists()) {
                 file.createNewFile();
             }
             command = file.getAbsolutePath();
-            fw = new FileWriter(file);
-            fw.write(script);
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), charset));
+            bw.write(script);
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("runtime解析报错：" + e.getMessage());
+            logger.error("runtime生成py脚本文件报错：" + e.getMessage());
             rtnMap.put("errorMsg", "无法保存py文件！");
             return rtnMap;
         } finally {
-            if (fw != null) {
+            if (bw != null) {
                 try {
-                    fw.close();
+                    bw.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        }
+
+        File paramFile = null;
+        // 如果参数长度太大，则可能会超过cmd的长度限制导致执行失败，此时要将参数转存为文件
+        if (params.length() < 1024) {   // 1024是自定义的，可以根据系统性能或设置来定义。注意，windows的cmd不能超过8196
+            params = "\"" + params + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
+        } else {
+            try {
+                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + new Date().getTime() + ".txt";
+                paramFile = new File(paramsPath);
+                if (!paramFile.exists()) {
+                    paramFile.createNewFile();
+                }
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(paramFile), charset));
+                bw.write(params);
+                params = paramsPath;    // 此时参数为参数文件的绝对路径
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.error("runtime生成txt参数文件报错：" + e.getMessage());
+                rtnMap.put("errorMsg", "无法保存参数文件！");
+                return rtnMap;
+            } finally {
+                if (bw != null) {
+                    try {
+                        bw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -172,14 +205,13 @@ public class RunPythonUtil {
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            params = "\"" + params + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
-            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
+            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", "GBK"); //python执行完后的数据默认用“GBK”解析，以防中文乱码
             stderr.start();
             // 获取标准输出流的内容
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
             while ((line = stdout.readLine()) != null) {
                 rtnSb.append(line).append("\r\n");
             }
@@ -200,7 +232,12 @@ public class RunPythonUtil {
         // 如果只是一次性的执行，可以将生成的py文件删除，看情况
         // 使用file的delete方法时，一定要判断清楚文件路径。这样的删除很难恢复，万一路径是磁盘路径或者重要文件夹路径，等着哭吧
         try {
-            file.delete();
+            if (file!=null) {
+                file.delete();
+            }
+            if (paramFile!=null) {
+                paramFile.delete();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("runtime解析报错：" + e.getMessage());
@@ -228,7 +265,7 @@ public class RunPythonUtil {
         if (StringUtils.isBlank(charset)) {
             charset = "GBK";
         }
-        FileWriter fw = null;
+        BufferedWriter bw = null;
         File file = null;
         // 将用户编写的解析字符串生成py文件，并返回py文件名，下次传入文件名就不需重新生成新的py文件
         if (StringUtils.isBlank(analysis)) {
@@ -245,8 +282,8 @@ public class RunPythonUtil {
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-                fw = new FileWriter(file);
-                fw.write(analysis);
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), charset));
+                bw.write(analysis);
                 rtnMap.put("pyFileName", packetName);   // 将解析py文件名返回，用于定位和重复使用
             } catch (IOException e) {
                 e.printStackTrace();
@@ -254,9 +291,9 @@ public class RunPythonUtil {
                 rtnMap.put("errorMsg", "无法保存py文件！");
                 return rtnMap;
             } finally {
-                if (fw != null) {
+                if (bw != null) {
                     try {
-                        fw.close();
+                        bw.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -264,12 +301,42 @@ public class RunPythonUtil {
             }
         }
 
+        String params = null;   // 用来存放真正执行在cmd命令行上的参数
+
+        // 如果参数长度太大，则可能会超过cmd的长度限制导致执行失败，此时要将参数转存为文件
+        if (feedback.length() < 1024) {   // 1024是自定义的，可以根据系统性能或设置来定义。注意，windows的cmd不能超过8196
+            params = "\"" + feedback + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
+        } else {
+            File paramFile = null;
+            try {
+                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + new Date().getTime() + ".txt";
+                paramFile = new File(paramsPath);
+                if (!paramFile.exists()) {
+                    paramFile.createNewFile();
+                }
+                bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(paramFile), charset));
+                bw.write(feedback);
+                params = paramsPath;    // 此时参数为参数文件的绝对路径
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.error("runtime生成txt参数文件报错：" + e.getMessage());
+                rtnMap.put("errorMsg", "无法保存参数文件！");
+                return rtnMap;
+            } finally {
+                if (bw != null) {
+                    try {
+                        bw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         // 用刚才缓存的py文件解析代码
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            feedback = "\"" + feedback + "\"";
-            String[] cmd = new String[]{"python",command,packetName,feedback};
+            String[] cmd = new String[]{"python",command,packetName,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
             ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
