@@ -302,12 +302,13 @@ public class RunPythonUtil {
         }
 
         String params = null;   // 用来存放真正执行在cmd命令行上的参数
+        String flag = "0";  // 用来判断cmd上参数是报文还是文件路径 0-报文，1-路径
+        File paramFile = null;
 
         // 如果参数长度太大，则可能会超过cmd的长度限制导致执行失败，此时要将参数转存为文件
         if (feedback.length() < 1024) {   // 1024是自定义的，可以根据系统性能或设置来定义。注意，windows的cmd不能超过8196
             params = "\"" + feedback + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
         } else {
-            File paramFile = null;
             try {
                 String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + new Date().getTime() + ".txt";
                 paramFile = new File(paramsPath);
@@ -317,6 +318,7 @@ public class RunPythonUtil {
                 bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(paramFile), charset));
                 bw.write(feedback);
                 params = paramsPath;    // 此时参数为参数文件的绝对路径
+                flag = "1";
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error("runtime生成txt参数文件报错：" + e.getMessage());
@@ -336,7 +338,7 @@ public class RunPythonUtil {
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            String[] cmd = new String[]{"python",command,packetName,params};
+            String[] cmd = new String[]{"python",command,packetName,params,flag};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
             ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
