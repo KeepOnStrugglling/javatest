@@ -35,6 +35,20 @@ public class RunPythonUtil {
     private ConfigProperties configProperties;
     private static RunPythonUtil runPythonUtil;
 
+    private static String parseCharset;
+
+    static{
+        // windows默认的编码是GBK，linux默认的编码是utf-8，所以解析脚本执行完返回的数据时需要根据系统来决定码表，否则会中文乱码
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("windows")) {
+            parseCharset = "GBK";
+        } else if (os.contains("linux")) {
+            parseCharset = "UTF-8";
+        } else {
+            parseCharset = null;
+        }
+    }
+
     public void setConfigProperties(ConfigProperties configProperties) {
         this.configProperties = configProperties;
     }
@@ -208,10 +222,10 @@ public class RunPythonUtil {
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
             // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
-            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", "GBK"); //python执行完后的数据默认用“GBK”解析，以防中文乱码
+            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", parseCharset);
             stderr.start();
             // 获取标准输出流的内容
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), parseCharset));
             while ((line = stdout.readLine()) != null) {
                 rtnSb.append(line).append("\r\n");
             }
@@ -260,10 +274,10 @@ public class RunPythonUtil {
 
         Map<String,Object> rtnMap = new HashMap<>();
         if (StringUtils.isBlank(command)) {
-            command = runPythonUtil.configProperties.getPythonFilePath() + "door.py";   // 测试时要改为resourses/py的相对路径，或者将resourses/py的所有py放到runPythonUtil.configProperties.getPythonFilePath()路径下
+            command = runPythonUtil.configProperties.getPythonFilePath() + "door2.py";
         }
         if (StringUtils.isBlank(charset)) {
-            charset = "GBK";
+            charset = "UTF-8";
         }
         BufferedWriter bw = null;
         File file = null;
@@ -284,10 +298,10 @@ public class RunPythonUtil {
                 }
                 bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), charset));
                 bw.write(analysis);
-                rtnMap.put("pyFileName", packetName);   // 将解析py文件名返回，用于定位和重复使用
+                rtnMap.put("pyFileName", packetName);
             } catch (IOException e) {
                 e.printStackTrace();
-                logger.error("runtime解析报错：" + e.getMessage());
+                logger.error("runtime生成py脚本文件报错：" + e.getMessage());
                 rtnMap.put("errorMsg", "无法保存py文件！");
                 return rtnMap;
             } finally {
@@ -301,11 +315,11 @@ public class RunPythonUtil {
             }
         }
 
+        // 如果参数长度太大，则可能会超过cmd的长度限制导致执行失败，此时要将参数转存为文件
         String params = null;   // 用来存放真正执行在cmd命令行上的参数
         String flag = "0";  // 用来判断cmd上参数是报文还是文件路径 0-报文，1-路径
         File paramFile = null;
 
-        // 如果参数长度太大，则可能会超过cmd的长度限制导致执行失败，此时要将参数转存为文件
         if (feedback.length() < 1024) {   // 1024是自定义的，可以根据系统性能或设置来定义。注意，windows的cmd不能超过8196
             params = "\"" + feedback + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
         } else {
@@ -334,23 +348,21 @@ public class RunPythonUtil {
                 }
             }
         }
-        // 用刚才缓存的py文件解析代码
+
         String line;
         StringBuffer rtnSb = new StringBuffer();
         try {
-            String[] cmd = new String[]{"python",command,packetName,params,flag};
+            String pythonExe = runPythonUtil.configProperties.getPythonExe();
+            String[] cmd = new String[]{pythonExe,command,packetName,params,flag};
             Process process = Runtime.getRuntime().exec(cmd);
-            // error的要单独开一个线程处理。其实最好分成两个子线程处理标准输出流和错误输出流
-            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", charset);
+            ProcessStream stderr = new ProcessStream(process.getErrorStream(), "ERROR", parseCharset);
             stderr.start();
-            // 获取标准输出流的内容
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), charset));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), parseCharset));
             while ((line = stdout.readLine()) != null) {
                 rtnSb.append(line).append("\r\n");
             }
             rtnMap.put("result",rtnSb.toString());
             rtnMap.put("error",stderr.getContent());
-            //关闭流
             stdout.close();
             int status = process.waitFor();
             if (status != 0) {
@@ -362,14 +374,17 @@ public class RunPythonUtil {
             e.printStackTrace();
             logger.error("runtime解析报错：" + e.getMessage());
         }
-        // 如果只是一次性的执行，可以将生成的py文件删除，看情况
-        // 使用file的delete方法时，一定要判断清楚文件路径。这样的删除很难恢复，万一路径是磁盘路径或者重要文件夹路径。。。
-//        try {
-//            file.delete();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error("runtime解析报错：" + e.getMessage());
-//        }
+        try {
+//            if (file!=null) {
+//                file.delete();
+//            }
+            if (paramFile!=null) {
+                paramFile.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("runtime解析报错：" + e.getMessage());
+        }
         System.out.println("*****************完成runtime解析,包含缓存文件*****************");
         return rtnMap;
     }

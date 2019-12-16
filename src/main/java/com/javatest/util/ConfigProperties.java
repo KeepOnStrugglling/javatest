@@ -14,12 +14,20 @@ import javax.annotation.PostConstruct;
 public class ConfigProperties {
 
 	private String pythonFilePath;
+	private String pythonExe;
 
 	public String getPythonFilePath() {
 		return pythonFilePath;
 	}
 
+	public String getPythonExe() {
+		return pythonExe;
+	}
+
 	public void setPythonFilePath(String pythonFilePath) {
 		this.pythonFilePath = pythonFilePath;
+	}
+	public void setPythonExe(String pythonExe) {
+		this.pythonExe = pythonExe;
 	}
 }

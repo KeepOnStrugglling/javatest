@@ -5,19 +5,23 @@ import subprocess
 import Template
 import pymysql
 import MySQLdb
+import timeit
 __import__
+import __
 os.
 commands.
 subprocess.
 Template.
 pymysql.
 MySQLdb.
+timeit.
 ('os')
 ('commands')
 ('subprocess')
 ('Template')
 ('pymysql')
 ('MySQLdb')
+('timeit')
 exec
 eval
 complie
