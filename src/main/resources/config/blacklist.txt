@@ -1,4 +1,3 @@
-#python的黑名单
 import os
 import commands
 import subprocess
