@@ -22,17 +22,21 @@ public class PythonFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String script = request.getParameter("script");
+        String[] scripts = script.split(System.lineSeparator());
         String line = null;
         BufferedReader br = new BufferedReader(new InputStreamReader(new ClassPathResource("/config/blacklist.txt").getInputStream()));
         while ((line = br.readLine()) != null) {
-            if (script.contains(line)) {
-                java.io.PrintWriter printWriter = response.getWriter();
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("application/json; charset=utf-8");
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("status", 4404); //自定义，前端要页面显示python代码包含敏感词
-                printWriter.append(jsonObject.toString());
-                return;
+            for (int i = 0; i < scripts.length; i++) {
+                if (scripts[i].contains(line)) {
+                    response.setCharacterEncoding("UTF-8");
+                    response.setContentType("application/json; charset=utf-8");
+                    PrintWriter printWriter = response.getWriter();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("status", 4404); //自定义，前端要页面显示python代码包含敏感词
+                    jsonObject.put("msg", String.format("第%d行出现敏感词:'%s'" ,i+1, line));
+                    printWriter.append(jsonObject.toString());
+                    return;
+                }
             }
         }
         filterChain.doFilter(request,response);
