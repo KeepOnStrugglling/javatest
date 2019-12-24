@@ -22,14 +22,18 @@ timeit.
 ('pymysql')
 ('MySQLdb')
 ('timeit')
-exec
-eval
-complie
-execfile
-#import marshal
-#import PyYAML
-#import pickle
-#import cpickle
-#import shelve
-#import PIL
-#import unzip
+exec 
+eval 
+complie 
+execfile 
+exec(
+eval(
+complie(
+execfile(
+import marshal
+import PyYAML
+import pickle
+import cpickle
+import shelve
+import PIL
+import unzip
