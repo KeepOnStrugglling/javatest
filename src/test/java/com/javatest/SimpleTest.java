@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Scanner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = JavaTestApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,4 +76,18 @@ public class SimpleTest {
         String[] logoutOrderArr = StringUtils.split(null,",");
         System.out.println(logoutOrderArr);
     }
+
+    @Test
+    public void test8(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("定额为：");
+        double e = scanner.nextDouble();
+        System.out.println("利率：");
+        double r = scanner.nextDouble();
+        Double sum = (Math.pow(r,1)+Math.pow(r,2)+Math.pow(r,3)+Math.pow(r,4)+Math.pow(r,5)+Math.pow(r,6)+Math.pow(r,7)+
+                Math.pow(r,8)+Math.pow(r,9)+Math.pow(r,10)+Math.pow(r,11)+Math.pow(r,12))*e;
+        BigDecimal result = new BigDecimal(sum);
+        System.out.println("总数为：" + result.setScale(3,BigDecimal.ROUND_HALF_UP).doubleValue());
+    }
+
 }
