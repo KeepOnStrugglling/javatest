@@ -14,10 +14,13 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author hjw
+ * @date 2020-3-24
+ */
 public class RSAUtil {
 
     private static String RSA = "RSA"; //指定加密类型
