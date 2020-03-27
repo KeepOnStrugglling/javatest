@@ -1,4 +1,4 @@
-package com.javatest.po;
+package com.javatest.po.FactoryPo;
 
 public class VWFactory extends AbstractFactory{
     public Car getCar() {

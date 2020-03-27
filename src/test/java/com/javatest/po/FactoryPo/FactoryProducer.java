@@ -1,6 +1,4 @@
-package com.javatest.po;
-
-import com.javatest.FactoryTest;
+package com.javatest.po.FactoryPo;
 
 // 工厂创建类
 public class FactoryProducer{

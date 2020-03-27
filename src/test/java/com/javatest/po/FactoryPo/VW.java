@@ -1,4 +1,4 @@
-package com.javatest.po;
+package com.javatest.po.FactoryPo;
 
 public class VW implements Car{
     @Override
