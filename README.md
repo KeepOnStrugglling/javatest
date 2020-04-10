@@ -10,8 +10,10 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 4. 研究for循环中的事务控制；
 5. 研究TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()回滚范围；
 6. 研究通过枚举名称获取对应的枚举值；
+7. 完成rsa算法工具类；
 
 ## TODO
 1. 研究hutool；
 2. 研究设计模式；
-3. 研究rsa算法；
+3. 研究ClassLoader机制；
+4. 研究线程队列；
