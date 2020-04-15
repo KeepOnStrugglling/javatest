@@ -1,4 +1,4 @@
-package com.javatest.po;
+package com.javatest;
 
 import com.javatest.po.BridgePo.*;
 
