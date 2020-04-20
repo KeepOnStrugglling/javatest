@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javatest.dao.ExceptionLogMapper">
+
+    <resultMap type="com.javatest.po.ExceptionLog" id="BaseResultMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="exceptionName" column="exception_name" jdbcType="VARCHAR"/>
+        <result property="exceptionMsg" column="exception_msg" jdbcType="VARCHAR"/>
+        <result property="methodName" column="method_name" jdbcType="VARCHAR"/>
+        <result property="ip" column="ip" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="requestParam" column="request_param" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, user_id, user_name, exception_name, exception_msg, method_name, ip, url, request_param, create_time        
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+          <include refid="Base_Column_List" />
+        from studentscore.exception_log
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="queryExceptionLogList" resultMap="BaseResultMap" parameterType="com.javatest.po.ExceptionLog">
+        select
+          <include refid="Base_Column_List" />
+        from studentscore.exception_log
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionName != null and exceptionName != ''">
+                and exception_name = #{exceptionName,jdbcType=VARCHAR}
+            </if>
+            <if test="exceptionMsg != null and exceptionMsg != ''">
+                and exception_msg = #{exceptionMsg,jdbcType=VARCHAR}
+            </if>
+            <if test="methodName != null and methodName != ''">
+                and method_name = #{methodName,jdbcType=VARCHAR}
+            </if>
+            <if test="ip != null and ip != ''">
+                and ip = #{ip,jdbcType=VARCHAR}
+            </if>
+            <if test="url != null and url != ''">
+                and url = #{url,jdbcType=VARCHAR}
+            </if>
+            <if test="requestParam != null and requestParam != ''">
+                and request_param = #{requestParam,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+    <insert id="insert" keyProperty="id" parameterType="com.javatest.po.ExceptionLog">
+        insert into studentscore.exception_log(user_id, user_name, exception_name, exception_msg, method_name, ip, url, request_param, create_time)
+        values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{exceptionName,jdbcType=VARCHAR}, #{exceptionMsg,jdbcType=VARCHAR}, #{methodName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>    
+    <insert id="insertSelective" keyProperty="id" parameterType="com.javatest.po.ExceptionLog">
+        insert into studentscore.exception_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">
+                user_id,            
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name,            
+            </if>
+            <if test="exceptionName != null and exceptionName != ''">
+                exception_name,            
+            </if>
+            <if test="exceptionMsg != null and exceptionMsg != ''">
+                exception_msg,            
+            </if>
+            <if test="methodName != null and methodName != ''">
+                method_name,            
+            </if>
+            <if test="ip != null and ip != ''">
+                ip,            
+            </if>
+            <if test="url != null and url != ''">
+                url,            
+            </if>
+            <if test="requestParam != null and requestParam != ''">
+                request_param,            
+            </if>
+            <if test="createTime != null">
+                create_time    
+            </if>
+        </trim>
+        values 
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">
+                #{userId,jdbcType=VARCHAR}, 
+            </if>
+            <if test="userName != null and userName != ''">
+                #{userName,jdbcType=VARCHAR}, 
+            </if>
+            <if test="exceptionName != null and exceptionName != ''">
+                #{exceptionName,jdbcType=VARCHAR}, 
+            </if>
+            <if test="exceptionMsg != null and exceptionMsg != ''">
+                #{exceptionMsg,jdbcType=VARCHAR}, 
+            </if>
+            <if test="methodName != null and methodName != ''">
+                #{methodName,jdbcType=VARCHAR}, 
+            </if>
+            <if test="ip != null and ip != ''">
+                #{ip,jdbcType=VARCHAR}, 
+            </if>
+            <if test="url != null and url != ''">
+                #{url,jdbcType=VARCHAR}, 
+            </if>
+            <if test="requestParam != null and requestParam != ''">
+                #{requestParam,jdbcType=VARCHAR}, 
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.javatest.po.ExceptionLog">
+        update studentscore.exception_log
+        set 
+        user_id = #{userId,jdbcType=VARCHAR},            
+            user_name = #{userName,jdbcType=VARCHAR},            
+            exception_name = #{exceptionName,jdbcType=VARCHAR},            
+            exception_msg = #{exceptionMsg,jdbcType=VARCHAR},            
+            method_name = #{methodName,jdbcType=VARCHAR},            
+            ip = #{ip,jdbcType=VARCHAR},            
+            url = #{url,jdbcType=VARCHAR},            
+            request_param = #{requestParam,jdbcType=VARCHAR},            
+            create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.javatest.po.ExceptionLog">
+        update studentscore.exception_log
+        <set>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId,jdbcType=VARCHAR},            
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName,jdbcType=VARCHAR},            
+            </if>
+            <if test="exceptionName != null and exceptionName != ''">
+                exception_name = #{exceptionName,jdbcType=VARCHAR},            
+            </if>
+            <if test="exceptionMsg != null and exceptionMsg != ''">
+                exception_msg = #{exceptionMsg,jdbcType=VARCHAR},            
+            </if>
+            <if test="methodName != null and methodName != ''">
+                method_name = #{methodName,jdbcType=VARCHAR},            
+            </if>
+            <if test="ip != null and ip != ''">
+                ip = #{ip,jdbcType=VARCHAR},            
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url,jdbcType=VARCHAR},            
+            </if>
+            <if test="requestParam != null and requestParam != ''">
+                request_param = #{requestParam,jdbcType=VARCHAR},            
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from studentscore.exception_log where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+</mapper>
