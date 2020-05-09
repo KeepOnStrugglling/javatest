@@ -28,7 +28,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public OperationLog selectByPrimaryKey(Integer id) {
-        // TODO Auto-generated method
         return operationLogMapper.selectByPrimaryKey(id);
     }
 
@@ -39,7 +38,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public List<OperationLog> queryOperationLogList(OperationLog operationLog) {
-        // TODO Auto-generated method
         return operationLogMapper.queryOperationLogList(operationLog);
     }
 
@@ -50,7 +48,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public int insert(OperationLog operationLog) {
-        // TODO Auto-generated method
         return operationLogMapper.insert(operationLog);
     }
     
@@ -61,7 +58,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public int insertSelective(OperationLog operationLog) {
-        // TODO Auto-generated method
         return operationLogMapper.insertSelective(operationLog);
     }
 
@@ -72,7 +68,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public int updateByPrimaryKey(OperationLog operationLog) {
-        // TODO Auto-generated method
         return operationLogMapper.updateByPrimaryKey(operationLog);
     }
     
@@ -83,7 +78,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public int updateByPrimaryKeySelective(OperationLog operationLog) {
-        // TODO Auto-generated method
         return operationLogMapper.updateByPrimaryKeySelective(operationLog);
     }
 
@@ -94,7 +88,6 @@ public class OperationLogServiceImpl implements OperationLogService {
      */
     @Override
     public int deleteByPrimaryKey(Integer id) {
-        // TODO Auto-generated method
         return operationLogMapper.deleteByPrimaryKey(id);
     }
 }

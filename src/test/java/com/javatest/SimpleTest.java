@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -90,4 +91,33 @@ public class SimpleTest {
         System.out.println("总数为：" + result.setScale(3,BigDecimal.ROUND_HALF_UP).doubleValue());
     }
 
+    @Test
+    public void test9(){
+        StudentScore s = new StudentScore();
+        System.out.println(s.toString());
+        long id = 1L;
+        String name = "JoJo";
+        int score = 100;
+        setStudentScore(s,id,name,score);
+        System.out.println(s.toString());
+    }
+
+    private void setStudentScore(StudentScore s, long id, String name, int score) {
+        s.setId(id);
+        s.setName(name);
+        s.setScore(score);
+    }
+
+    @Test
+    public void test10(){
+        String[] a = {"ssss","aaaa","bbbb","cccc"};
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < a.length; i++) {
+            sb.append(a[i]).append(",");
+            if (i==a.length-1) {
+                sb.deleteCharAt(sb.length()-1);
+            }
+        }
+        System.out.println(sb.toString());
+    }
 }

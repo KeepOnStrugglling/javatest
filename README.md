@@ -18,3 +18,6 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 3. 研究ClassLoader机制；
 4. 研究线程队列；
 5. 研究aop技术，实现日志记录
+6. 模块聚合改造；
+7. 异常统一处理改造；
+8. 研究lombok并对po层改造

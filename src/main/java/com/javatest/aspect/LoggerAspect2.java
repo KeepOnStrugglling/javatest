@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Aspect     // 指定当前类为切面类
+//@Aspect     // 指定当前类为切面类
 @Component  // 创建切面类对象
 public class LoggerAspect2 {
 
@@ -42,40 +42,53 @@ public class LoggerAspect2 {
     // TODO 环绕通知改造尚未完成
     //正常的请求日志是在返回时记录所有数据的
     @Around(value = "operLogPt()")
-    public void addOperLog(ProceedingJoinPoint joinPoint) {
+    public Object addOperLog(ProceedingJoinPoint joinPoint) {
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            OperationLog operationLog = new OperationLog();
 
             // 获取通知前的时间
-            Date startTime = new Date();
-
-            //从切面织入点处通过反射机制获取织入点处的方法
+            operationLog.setStartTime(new Date());
+            // 获取被织入增强的方法签名对象
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-            // 获取切入点所在的方法
-            Method method = signature.getMethod();
+            // 获取请求类路径+方法名
+            operationLog.setMethodName(signature.getDeclaringTypeName() + "." + signature.getName());
 
-            // 获取请求的类路径
-            String className = joinPoint.getTarget().getClass().getName();
-            // 获取请求的方法名
-            String methodName = method.getName();
-            methodName = className + "." + methodName;
+            // 获取注解上的信息
+            OperLog annotation = signature.getMethod().getAnnotation(OperLog.class);
+            if (annotation != null) {
+                operationLog.setType(annotation.type());
+                operationLog.setModule(annotation.module());
+                operationLog.setRequestDes(annotation.requestDes());
+            }
+
+            // 获取POST请求参数
+            Map<String,String> paramMap = new HashMap<>();
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            for (String key : parameterMap.keySet()) {
+                paramMap.put(key,parameterMap.get(key)[0]);
+            }
+            operationLog.setRequestParam(JSON.toJSONString(paramMap));
+
+            // 执行方法
+            try {
+                joinPoint.proceed();
+                // TODO 获取方法返回值
+
+
+
+            } catch (Throwable throwable) {
+                // TODO 异常处理
+                throwable.printStackTrace();
+                return null;
+            }
+
 
             // TODO 以下仍待改造
-            // 获取POST请求参数
-//            Map<String,String> paramMap = new HashMap<>();
-//            Map<String, String[]> parameterMap = request.getParameterMap();
-//            for (String key : parameterMap.keySet()) {
-//                paramMap.put(key,parameterMap.get(key)[0]);
-//            }
-//            String param = JSON.toJSONString(paramMap);
+
+
 //
-//            // 获取注解上的信息
-//            OperLog annotation = method.getAnnotation(OperLog.class);
-//            if (annotation != null) {
-//                String type = annotation.type();
-//                String module = annotation.module();
-//                String requestDes = annotation.requestDes();
-//            }
+
 //
 //
 //            // 完善信息,id为int类型自增。可改用String传uuid
@@ -98,6 +111,7 @@ public class LoggerAspect2 {
         } catch (Exception e) {
             logger.error("插入日志失败",e);
         }
+        return null;
     }
 
     // TODO 等待并入到上面的环绕通知中

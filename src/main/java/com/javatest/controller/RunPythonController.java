@@ -1,6 +1,7 @@
 package com.javatest.controller;
 
 import com.javatest.service.RunPythonService;
+import com.javatest.util.annotation.OperLog;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ public class RunPythonController {
         }
     }
 
+    @OperLog(type = "python解析",module = "python",requestDes = "解析脚本为文件，解析报文为字符串")
     @RequestMapping("/runPythonFile")
     public Map<String,Object> runPythonFile(String script, String code, String charset) {
         if (StringUtils.isBlank(script) || StringUtils.isBlank(code)) {
@@ -48,5 +50,21 @@ public class RunPythonController {
             charset = "GBK";    // windows环境下命令行用utf-8遇到中文会乱码，建议win环境下用GBK
         }
         return service.runPythonFile(script,code,charset);
+    }
+
+    @OperLog(type = "python解析",module = "python",requestDes = "解析脚本为文件，解析报文为文件")
+    @RequestMapping("/runPythonFile4CU")
+    public Map<String,Object> runPythonFile4CU(String script, String code, String charset) {
+        long l1 = System.currentTimeMillis();
+        if (StringUtils.isBlank(script) || StringUtils.isBlank(code)) {
+            return null;
+        }
+        if (StringUtils.isBlank(charset)) {
+            charset = "GBK";    // windows环境下命令行用utf-8遇到中文会乱码，建议win环境下用GBK
+        }
+        Map<String, Object> map = service.runPythonFile4CU(script, code, charset);
+        long l2 = System.currentTimeMillis();
+        System.out.println("耗时：" + (l2-l1));
+        return map;
     }
 }

@@ -375,9 +375,9 @@ public class RunPythonUtil {
             logger.error("runtime解析报错：" + e.getMessage());
         }
         try {
-//            if (file!=null) {
-//                file.delete();
-//            }
+            if (file!=null) {
+                file.delete();
+            }
             if (paramFile!=null) {
                 paramFile.delete();
             }
@@ -432,90 +432,5 @@ public class RunPythonUtil {
 //        return rtnMap;
 //    }
 
-    /**
-     * 附测试代码
-     */
-    public static void main(String[] args) {
 
-        /*
-        // 测试使用jython解析
-        String script = "# # -*- coding: utf-8 -*-\n" +
-                "\n" +
-                "status=0\n" +
-                "succParamMsg = \"\"\n" +
-                "textMsg = \"\"\n" +
-                "errorMsg = \"\"\n" +
-                "returnMsg = {\"status\":status,\"succParamMsg\":succParamMsg,\"textMsg\":textMsg,\"errorMsg\":errorMsg}\n" +
-                "\n" +
-                "def main(report):\n" +
-                "    if(1<2):\n" +
-                "        status=1\n" +
-                "    returnMsg[\"succParamMsg\"]=report\n" +
-                "    print(returnMsg)\n" +
-                "    return returnMsg";
-        String report = "hello world";
-        Map<String, Object> map = runPythonByJython(script, report);
-        System.out.println("result:" + map.get("result"));
-
-//        String script = "# coding=utf-8\n" +
-//                "\n" +
-//                "status=0\n" +
-//                "succParamMsg = \"\"\n" +
-//                "textMsg = \"\"\n" +
-//                "errorMsg = \"\"\n" +
-//                "returnMsg = {\"status\":status,\"succParamMsg\":succParamMsg,\"textMsg\":textMsg,\"errorMsg\":errorMsg}\n" +
-//                "\n" +
-//                "def main(report):\n" +
-//                "    if(1<2):\n" +
-//                "        status=1\n" +
-//                "    returnMsg[\"succParamMsg\"]=report\n" +
-//                "    print(returnMsg)\n" +
-//                "    return returnMsg";
-//        String script2 = "import ast\n" +
-//                "\n" +
-//                "status=0\n" +
-//                "succParamMsg = \"\"\n" +
-//                "textMsg = \"\"\n" +
-//                "errorMsg = \"\"\n" +
-//                "returnMsg = {\"status\":status,\"succParamMsg\":succParamMsg,\"textMsg\":textMsg,\"errorMsg\":errorMsg}\n" +
-//                "\n" +
-//                "eval(\"__import__('os').system('whoami')\")\n" +
-//                "\n" +
-//                "def main(report):\n" +
-//                "    ast.literal_eval(\"__import__('os').system('whoami')\")\n" +
-//                "    returnMsg[\"succParamMsg\"] = report\n" +
-//                "    print(returnMsg)\n" +
-//                "    return returnMsg";
-//        Map<String, Object> map = runPythonByJython(script2, params);
-//        System.out.println("result:" + map.get("result"));
-//        System.out.println("error:" + map.get("error"));
-        */
-
-        // 测试使用runtime.exec解析
-//        String command = "E:/test/pythontest/Demo.py";
-//        String params = "+++     NMS SERVER        2019-11-07 17:58:47\n" +
-//                "O&M     #2304\n" +
-//                "%%LGI:OP=\"aaa\", PWD=\"*****\";%%\n" +
-//                "RETCODE = 1  \n" +
-//                "\n" +
-//                "该用户已经登录\n" +
-//                "\n" +
-//                "---    END";
-//        String charset = "GBK";
-//        Map<String, Object> map2 = runPythonByRuntime(command, params,charset);
-//        System.out.println("result:" + map2.get("result"));
-//        System.out.println("error:" + map2.get("error"));
-
-        //测试用Runtime.exec解析
-        String command = "e:/test/py/door.py";
-        String packetName ="DHwAts";
-        String charset = "GBK"; // utf-8返回中文会乱码，改用GBK
-        Map<String, Object> map2 = runPythonFileByRuntime4CU(command, feedback,null,packetName,charset);
-        System.out.println("result:" + map2.get("result"));
-        System.out.println("error:" + map2.get("error"));
-    }
-    private final static String feedback = "框号    槽号    机架号  位置号  位置    资源名称  总数量    空闲数量  资源占用率(%)  低端内存占用数量  低端内存空闲数量  高端内存占用数量  高端内存空闲数量  文件句柄占用数量  文件句柄空闲数量  信号量占用数量  信号量空闲数量\n"+
-            "\n"+
-            " 0       0       0       0       前插板  PhyMem    24151 MB  21751 MB  9              NULL              NULL              NULL              NULL              9632              55904             66              31934         \n"+
-            "---    END";
 }

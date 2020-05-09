@@ -27,7 +27,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public ExceptionLog selectByPrimaryKey(Integer id) {
-        // TODO Auto-generated method
         return exceptionLogMapper.selectByPrimaryKey(id);
     }
 
@@ -38,7 +37,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public List<ExceptionLog> queryExceptionLogList(ExceptionLog exceptionLog) {
-        // TODO Auto-generated method
         return exceptionLogMapper.queryExceptionLogList(exceptionLog);
     }
 
@@ -49,7 +47,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public int insert(ExceptionLog exceptionLog) {
-        // TODO Auto-generated method
         return exceptionLogMapper.insert(exceptionLog);
     }
     
@@ -60,7 +57,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public int insertSelective(ExceptionLog exceptionLog) {
-        // TODO Auto-generated method
         return exceptionLogMapper.insertSelective(exceptionLog);
     }
 
@@ -71,7 +67,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public int updateByPrimaryKey(ExceptionLog exceptionLog) {
-        // TODO Auto-generated method
         return exceptionLogMapper.updateByPrimaryKey(exceptionLog);
     }
     
@@ -82,7 +77,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public int updateByPrimaryKeySelective(ExceptionLog exceptionLog) {
-        // TODO Auto-generated method
         return exceptionLogMapper.updateByPrimaryKeySelective(exceptionLog);
     }
 
@@ -93,7 +87,6 @@ public class ExceptionLogServiceImpl implements ExceptionLogService {
      */
     @Override
     public int deleteByPrimaryKey(Integer id) {
-        // TODO Auto-generated method
         return exceptionLogMapper.deleteByPrimaryKey(id);
     }
 }

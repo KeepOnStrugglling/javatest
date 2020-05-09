@@ -13,4 +13,6 @@ public interface RunPythonService {
     Map<String, Object> runPythonFile(String script, String code, String charset);
 
     void doUpdate();
+
+    Map<String, Object> runPythonFile4CU(String script, String code, String charset);
 }

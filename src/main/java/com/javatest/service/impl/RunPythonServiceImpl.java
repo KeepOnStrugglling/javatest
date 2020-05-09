@@ -100,4 +100,15 @@ public class RunPythonServiceImpl implements RunPythonService {
         studentScoreMapper.updateByPrimaryKeySelective(s);
         System.out.println(studentScoreMapper.selectByPrimaryKey(10015L));
     }
+
+    @Override
+    public Map<String, Object> runPythonFile4CU(String script, String code, String charset) {
+        Map<String, Object> rtnMap = RunPythonUtil.runPythonFileByRuntime4CU(null,code,script, null,charset);
+        if (rtnMap.get("result")==null) {
+            rtnMap.put("status","fail");
+        } else {
+            rtnMap.put("status","success");
+        }
+        return rtnMap;
+    }
 }
