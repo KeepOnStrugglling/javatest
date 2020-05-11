@@ -1,8 +1,6 @@
 package com.javatest.po;
 
-import java.util.Date;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * (OperationLog)实体类
@@ -35,11 +33,11 @@ public class OperationLog implements Serializable {
     //返回值
     private String returnData;
     //请求开始时间
-    private Date startTime;
+    private String startTime;
     //请求完成时间
-    private Date finishTime;
+    private String finishTime;
     //接口返回时间
-    private Date returnTime;
+    private String returnTime;
 
     
     public Integer getId() {
@@ -130,27 +128,27 @@ public class OperationLog implements Serializable {
         this.returnData = returnData == null ? null : returnData.trim(); 
     }
         
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
         
-    public Date getFinishTime() {
+    public String getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Date finishTime) {
+    public void setFinishTime(String finishTime) {
         this.finishTime = finishTime;
     }
         
-    public Date getReturnTime() {
+    public String getReturnTime() {
         return returnTime;
     }
 
-    public void setReturnTime(Date returnTime) {
+    public void setReturnTime(String returnTime) {
         this.returnTime = returnTime;
     }
     

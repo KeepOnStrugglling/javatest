@@ -22,11 +22,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Aspect     // 指定当前类为切面类
+//@Aspect     // 指定当前类为切面类
 @Component  // 创建切面类对象
 public class LoggerAspect {
 
@@ -94,7 +95,7 @@ public class LoggerAspect {
             operationLog.setReturnData(JSON.toJSONString(returnData));
 //            operationLog.setStartTime();
 //            operationLog.setFinishTime();
-            operationLog.setReturnTime(new Date());
+            operationLog.setReturnTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
 
             operationLogService.insertSelective(operationLog);
         } catch (Exception e) {
@@ -136,7 +137,7 @@ public class LoggerAspect {
             exceptionLog.setIp(IpAdressUtil.getIpAddr(request));
             exceptionLog.setUrl(request.getRequestURI());
             exceptionLog.setRequestParam(param);
-            exceptionLog.setCreateTime(new Date());
+            exceptionLog.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
 
             exceptionLogService.insertSelective(exceptionLog);
         } catch (Exception e1) {

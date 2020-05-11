@@ -1,8 +1,6 @@
 package com.javatest.po;
 
-import java.util.Date;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * (ExceptionLog)实体类
@@ -31,7 +29,7 @@ public class ExceptionLog implements Serializable {
     //请求参数
     private String requestParam;
     //异常产生时间
-    private Date createTime;
+    private String createTime;
 
     
     public Integer getId() {
@@ -106,11 +104,11 @@ public class ExceptionLog implements Serializable {
         this.requestParam = requestParam == null ? null : requestParam.trim(); 
     }
         
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
     
