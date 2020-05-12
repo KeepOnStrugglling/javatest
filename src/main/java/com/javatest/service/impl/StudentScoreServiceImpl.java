@@ -55,4 +55,13 @@ public class StudentScoreServiceImpl implements StudentScoreService {
         mapper.updateByPrimaryKeySelective(s);
         System.out.println(mapper.selectByPrimaryKey(10015L));
     }
+
+    @Override
+    public String update(StudentScore studentScore) {
+        if ("JoJo".equals(studentScore.getName())) {
+            studentScore.setScore(99);
+        }
+        mapper.updateByPrimaryKeySelective(studentScore);
+        return studentScore.toString();
+    }
 }

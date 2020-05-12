@@ -10,9 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = JavaTestApplication.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -119,5 +117,26 @@ public class SimpleTest {
             }
         }
         System.out.println(sb.toString());
+    }
+
+    @Test
+    public void test11(){
+        Map<String, Object> map = new HashMap<>();
+
+        StringBuilder huawei = new StringBuilder();
+//        map.put("vendor","华为");
+//        map.put("netName","net111222");
+//        if ("华为".equals(map.get("vendor"))) {
+//            huawei.append(map.get("netName")).append(",");
+//        }
+        String[] arr = {""};
+        for (String s : arr) {
+            huawei.append(s).append(",");
+        }
+        if (huawei.length()>0) {
+            huawei.deleteCharAt(huawei.length() - 1);
+        }
+        System.out.println(huawei.toString());
+
     }
 }

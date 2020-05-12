@@ -43,10 +43,10 @@ public class LoggerAspect2 {
     //正常的请求日志是在返回时记录所有数据的
     @Around(value = "operLogPt()")
     public Object addOperLog(ProceedingJoinPoint joinPoint) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        OperationLog operationLog = new OperationLog();
+        Object object = null;
         try {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            OperationLog operationLog = new OperationLog();
-            Object object = null;
 
             /*【环绕通知】 环绕前*/
 
@@ -67,10 +67,10 @@ public class LoggerAspect2 {
             }
 
             // 获取POST请求参数
-            Map<String,String> paramMap = new HashMap<>();
+            Map<String, String> paramMap = new HashMap<>();
             Map<String, String[]> parameterMap = request.getParameterMap();
             for (String key : parameterMap.keySet()) {
-                paramMap.put(key,parameterMap.get(key)[0]);
+                paramMap.put(key, parameterMap.get(key)[0]);
             }
             String param = JSON.toJSONString(paramMap);
             operationLog.setRequestParam(param);
@@ -80,6 +80,25 @@ public class LoggerAspect2 {
                 object = joinPoint.proceed();
 
                 operationLog.setFinishTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date())); // 方法执行完时间
+
+                /*【环绕通知】 环绕后*/
+                try {
+                    // 完善信息,id为int类型自增。可改用String传uuid
+                    operationLog.setUserId((String) request.getSession().getAttribute("userId"));
+                    operationLog.setUserName((String) request.getSession().getAttribute("userName"));
+                    operationLog.setIp(IpAdressUtil.getIpAddr(request));
+                    operationLog.setUrl(request.getRequestURI());
+                    operationLog.setMethodName(methodName);
+                    operationLog.setRequestParam(param);
+                    operationLog.setReturnData(JSON.toJSONString(object));
+                    operationLog.setReturnTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
+
+                    operationLogService.insertSelective(operationLog);
+                } catch (Exception e) {
+                    logger.error("插入操作日志失败", e);
+                }
+
+                // 注意：环绕通知必须返回方法执行的结果
             } catch (Throwable e) {
                 /*【环绕通知】 环绕异常*/
                 e.printStackTrace();
@@ -91,50 +110,27 @@ public class LoggerAspect2 {
                 for (StackTraceElement element : e.getStackTrace()) {
                     sb.append(element).append("\n");
                 }
-                // 从session中获取，本地测试写死
-//                exceptionLog.setUserId((String) request.getSession().getAttribute("userId"));
-//                exceptionLog.setUserName((String) request.getSession().getAttribute("userName"));
-                exceptionLog.setUserId("1");
-                exceptionLog.setUserName("azure");
-                exceptionLog.setExceptionName(e.getClass().getName());
-                exceptionLog.setExceptionMsg(sb.toString());
-                exceptionLog.setMethodName(methodName);
-                exceptionLog.setIp(IpAdressUtil.getIpAddr(request));
-                exceptionLog.setUrl(request.getRequestURI());
-                exceptionLog.setRequestParam(param);
-                exceptionLog.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
-
                 try {
+                    exceptionLog.setUserId((String) request.getSession().getAttribute("userId"));
+                    exceptionLog.setUserName((String) request.getSession().getAttribute("userName"));
+                    exceptionLog.setExceptionName(e.getClass().getName());
+                    exceptionLog.setExceptionMsg(sb.toString());
+                    exceptionLog.setMethodName(methodName);
+                    exceptionLog.setIp(IpAdressUtil.getIpAddr(request));
+                    exceptionLog.setUrl(request.getRequestURI());
+                    exceptionLog.setRequestParam(param);
+                    exceptionLog.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
+
                     exceptionLogService.insertSelective(exceptionLog);
                 } catch (Exception e1) {
-                    logger.error("插入异常日志失败",e1);
+                    logger.error("插入异常日志失败", e1);
                 }
             }
 
-            /*【环绕通知】 环绕后*/
-            // 为了避免环绕后的代码报错影响到环绕异常（环绕异常捕获的异常应该是目标方法自身的报错）
-            if (object != null) {
-                // 完善信息,id为int类型自增。可改用String传uuid
-                // 从session中获取，本地测试写死
-                operationLog.setUserId((String) request.getSession().getAttribute("userId"));
-                operationLog.setUserName((String) request.getSession().getAttribute("userName"));
-                operationLog.setIp(IpAdressUtil.getIpAddr(request));
-                operationLog.setUrl(request.getRequestURI());
-                operationLog.setMethodName(methodName);
-                operationLog.setRequestParam(param);
-                operationLog.setReturnData(JSON.toJSONString(object));
-                operationLog.setReturnTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
-
-                operationLogService.insertSelective(operationLog);
-
-                // 注意：环绕通知必须返回方法执行的结果
-                return object;
-            }
-
         } catch (Exception e) {
-            logger.error("插入日志失败",e);
+            e.printStackTrace();
         }
-        return null;
+        return object;
     }
 
 }

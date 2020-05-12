@@ -1,5 +1,7 @@
 package com.javatest.po;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -10,14 +12,14 @@ import java.io.Serializable;
  */
 public class StudentScore implements Serializable {
     private static final long serialVersionUID = 672128092584905440L;
-    //学生id
+
+    @NotNull(message = "id不能为空！")
     private Long id;
-    //学生姓名
+    @NotBlank(message = "名字不能为空！")
     private String name;
-    //学生成绩
+    @NotNull(message = "成绩不能为空！")
     private Integer score;
 
-    
     public Long getId() {
         return id;
     }

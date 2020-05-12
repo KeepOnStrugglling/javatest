@@ -15,4 +15,6 @@ public interface StudentScoreService {
     void variableTest2(int c);
 
     void doUpdate();
+
+    String update(StudentScore studentScore);
 }

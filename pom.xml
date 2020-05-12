@@ -99,6 +99,13 @@
             <artifactId>commons-codec</artifactId>
             <version>1.11</version>
         </dependency>
+
+        <!--lombok-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>javatest</finalName>

@@ -107,7 +107,7 @@ public class RunPythonUtil {
         System.out.println("*****************使用runtime解析*****************");
         Map<String,Object> rtnMap = new HashMap<>();
         String line;
-        StringBuffer rtnSb = new StringBuffer();
+        StringBuilder rtnSb = new StringBuilder();
         try {
             /* 注意：cmd的格式：“python py文件的路径 参数...”
              *  注意2：参数是字符串的时候，有可能会出现参数只解析第一个词的情况，此时必须在整个字符串参数首尾手动添加双引号（单引号都不行）
@@ -164,7 +164,7 @@ public class RunPythonUtil {
             charset = "UTF-8";
         }
         try {
-            file = new File( runPythonUtil.configProperties.getPythonFilePath() + "py" + new Date().getTime() + ".py");
+            file = new File( runPythonUtil.configProperties.getPythonFilePath() + "py" + System.currentTimeMillis() + ".py");
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -217,7 +217,7 @@ public class RunPythonUtil {
         }
         // 用刚才缓存的py文件解析代码
         String line;
-        StringBuffer rtnSb = new StringBuffer();
+        StringBuilder rtnSb = new StringBuilder();
         try {
             String[] cmd = new String[]{"python",command,params};
             Process process = Runtime.getRuntime().exec(cmd);
@@ -289,7 +289,7 @@ public class RunPythonUtil {
             }
         } else {
             if (StringUtils.isBlank(packetName)) {
-                packetName = "py" + new Date().getTime();
+                packetName = "py" + System.currentTimeMillis();
             }
             try {
                 file = new File(runPythonUtil.configProperties.getPythonFilePath() + packetName + ".py");
@@ -324,7 +324,7 @@ public class RunPythonUtil {
             params = "\"" + feedback + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
         } else {
             try {
-                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + new Date().getTime() + ".txt";
+                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + System.currentTimeMillis() + ".txt";
                 paramFile = new File(paramsPath);
                 if (!paramFile.exists()) {
                     paramFile.createNewFile();
@@ -350,7 +350,7 @@ public class RunPythonUtil {
         }
 
         String line;
-        StringBuffer rtnSb = new StringBuffer();
+        StringBuilder rtnSb = new StringBuilder();
         try {
             String pythonExe = runPythonUtil.configProperties.getPythonExe();
             String[] cmd = new String[]{pythonExe,command,packetName,params,flag};
