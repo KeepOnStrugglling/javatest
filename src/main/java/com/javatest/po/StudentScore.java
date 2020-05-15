@@ -13,6 +13,15 @@ import java.io.Serializable;
 public class StudentScore implements Serializable {
     private static final long serialVersionUID = 672128092584905440L;
 
+    public StudentScore() {
+    }
+
+    public StudentScore(@NotNull(message = "id不能为空！") Long id, @NotBlank(message = "名字不能为空！") String name, @NotNull(message = "成绩不能为空！") Integer score) {
+        this.id = id;
+        this.name = name;
+        this.score = score;
+    }
+
     @NotNull(message = "id不能为空！")
     private Long id;
     @NotBlank(message = "名字不能为空！")
