@@ -39,3 +39,5 @@ endpoints:
   actuator:
     enabled: true
     sensitive: false
+cxf:
+  path: /webservice
