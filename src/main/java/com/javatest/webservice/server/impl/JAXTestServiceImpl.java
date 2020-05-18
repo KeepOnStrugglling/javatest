@@ -12,7 +12,7 @@ import javax.xml.ws.Endpoint;
 /**
  * webservice服务端实现类。注意，如果使用面向接口，那么在此实现类中必须通过endpointInterface指定服务端接口类
  */
-@WebService(serviceName = "JAXTest",targetNamespace = "impl.server.webservice.javatest.com",endpointInterface = "com.javatest.webservice.server.JAXTestService")
+@WebService(targetNamespace = "impl.server.webservice.javatest.com",endpointInterface = "com.javatest.webservice.server.JAXTestService")
 @Service
 public class JAXTestServiceImpl implements JAXTestService {
 
