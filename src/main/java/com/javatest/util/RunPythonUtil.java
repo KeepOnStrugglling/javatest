@@ -389,14 +389,14 @@ public class RunPythonUtil {
         return rtnMap;
     }
 
-    /**
-     * 使用Runtime.getRuntime().exec()解析运行python字符串代码（废弃）
-     *  从原理上看应该是无法实现的，因为是模拟cmd命令行的方式执行，而cmd只能执行命令，不能执行代码
-     * @param script 解析的python代码字符串
-     * @param params python代码中的参数
-     * @param charset 码表
-     * @return
-     */
+//    /**
+//     * 使用Runtime.getRuntime().exec()解析运行python字符串代码（废弃）
+//     *  从原理上看应该是无法实现的，因为是模拟cmd命令行的方式执行，而cmd只能执行命令，不能执行代码
+//     * @param script 解析的python代码字符串
+//     * @param params python代码中的参数
+//     * @param charset 码表
+//     * @return
+//     */
 //    public static Map<String,Object> runPythonByRuntime2(String script, String params, String charset) {
 //        Map<String,Object> rtnMap = new HashMap<>();
 //        String line;
@@ -431,6 +431,9 @@ public class RunPythonUtil {
 //        }
 //        return rtnMap;
 //    }
-
+    public static void main(String[] args) throws IOException {
+        String[] cmd = new String[]{};
+        Process exec = Runtime.getRuntime().exec(cmd);
+    }
 
 }
