@@ -19,10 +19,12 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 
 ## TODO
 1. 研究hutool；
-2. 研究设计模式；
-3. 研究ClassLoader机制；
-4. 研究线程队列；
-6. 模块聚合改造；
-7. 异常统一处理改造；
-8. 研究webservice；
-9. 研究jwt；
+1. 研究设计模式；
+1. 研究ClassLoader机制；
+1. 研究线程队列；
+1. 模块聚合改造；
+1. 异常统一处理改造；
+1. 研究webservice；
+1. 研究jwt；
+1. 数据后端验证
+1. 调度任务quartz的实现
