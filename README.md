@@ -16,6 +16,7 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 10. 研究controller接口返回字符串为中文时乱码的解决方法
 11. 简单研究lombok；
 12. 研究Jackson工具类；
+13. 研究webservice（JWS、cxf）；
 
 ## TODO
 1. 研究hutool；
@@ -24,7 +25,6 @@ idea17.3/18.3，mysql5.7，easycode插件，springboot2.0.3
 1. 研究线程队列；
 1. 模块聚合改造；
 1. 异常统一处理改造；
-1. 研究webservice；
 1. 研究jwt；
 1. 数据后端验证
 1. 调度任务quartz的实现
