@@ -29,7 +29,7 @@ public class JAXTestServiceImpl implements JAXTestService {
     // 发布服务
     public static void main(String[] args) {
         // 指定服务url
-            String url = "http://localhost:9010/javatest/webservice/getJAX";
+        String url = "http://localhost:9010/javatest/webservice/getJAX";
         // 指定服务实现类
         JAXTestService server = new JAXTestServiceImpl();
         // 通过Endpoint发布服务
