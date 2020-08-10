@@ -1,4 +1,4 @@
-package com.javatest.schedule;
+package com.javatest.schedule.annotation;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.Date;
  * @author azure
  * @desc 使用@Scheduled注解实现定时调度
  */
-@Component  // 注意要注入Spring容器中
+//@Component  // 注意要注入Spring容器中
 public class ScheduleJob {
 
 //    @Scheduled(cron = "0/10 * * * * ?")   // 每当整10秒执行一次
