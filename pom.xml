@@ -128,6 +128,18 @@
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <version>3.2.13</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <!--创建ScheduledExecutorService线程池所需依赖，阿里推荐-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
 
     </dependencies>
     <build>
