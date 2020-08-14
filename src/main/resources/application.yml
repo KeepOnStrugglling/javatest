@@ -35,8 +35,6 @@ server:
 logging:
   level:
     com.javatest: debug
-  root:
-    info
   file:
     e:/log/javatest.log
 endpoints:

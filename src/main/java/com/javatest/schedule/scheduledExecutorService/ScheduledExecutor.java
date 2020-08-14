@@ -29,7 +29,7 @@ public class ScheduledExecutor {
     @RequestMapping("/runnable")
     public void runnable(){
         // 这里用guava的ThreadFactoryBuilder创建线程工程
-        ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("demo-%d").build();
+        ThreadFactory factory = new ThreadFactoryBuilder().setNameFormat("DemoJob-%d").build();
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,factory);
         executorService.schedule(new Runnable() {
             @Override
@@ -55,7 +55,7 @@ public class ScheduledExecutor {
     public void runnableFixedRate(){
         // 这里用org.apache.commons.lang3.concurrent.BasicThreadFactory创建线程工程，阿里推荐
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
-                new BasicThreadFactory.Builder().namingPattern("demo-rate-%d").daemon(false).build());
+                new BasicThreadFactory.Builder().namingPattern("DemoJob-rate-%d").daemon(false).build());
         executorService.scheduleAtFixedRate(() -> {
             System.out.println(Thread.currentThread().getName()+":"+System.currentTimeMillis());
             // 线程休眠3s模拟执行任务
@@ -73,7 +73,7 @@ public class ScheduledExecutor {
     public void runnableFixedDelay(){
         // 这里用org.apache.commons.lang3.concurrent.BasicThreadFactory创建线程工程，阿里推荐
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
-                new BasicThreadFactory.Builder().namingPattern("demo-delay-%d").daemon(false).build());
+                new BasicThreadFactory.Builder().namingPattern("DemoJob-delay-%d").daemon(false).build());
         executorService.scheduleWithFixedDelay(() -> {
             System.out.println(Thread.currentThread().getName()+":"+System.currentTimeMillis());
             // 线程休眠3s模拟执行任务
