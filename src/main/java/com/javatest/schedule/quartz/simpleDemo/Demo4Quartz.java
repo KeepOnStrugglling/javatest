@@ -23,13 +23,13 @@ public class Demo4Quartz {
         // 设置指定的日期（比如6月30日），注意，使用Calendar的月份枚举时需要+1！，也可以直接写数字
         calendar.set(Calendar.MONTH,Calendar.JUNE+1);
         calendar.set(Calendar.DATE,30);
-        // 设置是排除还是包含,false为排除，true为包含
+        // 设置是排除还是包含,true为排除，false为包含
         annualCalendar.setDayExcluded(calendar,true);
         // 将AnnualCalendar对象加入到容器中
         // 参数1为对象名，用作唯一标识，参数2为Calendar对象，参数3为是否替换原来的同名对象，参数4为是否替换原来的trigger
         sched.addCalendar("annualCalendar",annualCalendar,true,true);
 
-        JobDetail jobDetail = JobBuilder.newJob(Demo3Job.class)
+        JobDetail jobDetail = JobBuilder.newJob(DemoJob.class)
                 .withIdentity("demoJob","group1")
                 .build();
 
