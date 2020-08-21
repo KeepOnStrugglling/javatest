@@ -1,13 +1,12 @@
 package com.javatest.service.impl;
 
-import com.javatest.po.OperationLog;
-import com.javatest.dao.OperationLogMapper;
+import com.javatest.domain.OperationLog;
+import com.javatest.mapper.OperationLogMapper;
 import com.javatest.service.OperationLogService;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
-import java.util.Date;
 
 /**
  * (OperationLog)表服务实现类

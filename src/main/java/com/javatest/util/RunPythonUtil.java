@@ -1,6 +1,6 @@
 package com.javatest.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.python.core.Py;
 import org.python.core.PyFunction;
 import org.python.core.PyObject;
@@ -192,7 +192,7 @@ public class RunPythonUtil {
             params = "\"" + params + "\"";  // 以防万一，虽然本机运行有可能不加前后双引号也能执行（原因不明），但极可能换主机后会出现返回码为1的错误
         } else {
             try {
-                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + new Date().getTime() + ".txt";
+                String paramsPath = runPythonUtil.configProperties.getPythonFilePath() + "param" + System.currentTimeMillis() + ".txt";
                 paramFile = new File(paramsPath);
                 if (!paramFile.exists()) {
                     paramFile.createNewFile();

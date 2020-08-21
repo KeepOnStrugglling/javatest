@@ -1,8 +1,8 @@
 package com.javatest.aspect;
 
 import com.alibaba.fastjson.JSON;
-import com.javatest.po.ExceptionLog;
-import com.javatest.po.OperationLog;
+import com.javatest.domain.ExceptionLog;
+import com.javatest.domain.OperationLog;
 import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;
@@ -10,7 +10,6 @@ import com.javatest.util.annotation.OperLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;

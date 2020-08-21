@@ -1,7 +1,7 @@
 package com.javatest.service.impl;
 
-import com.javatest.dao.StudentScoreMapper;
-import com.javatest.po.StudentScore;
+import com.javatest.mapper.StudentScoreMapper;
+import com.javatest.domain.StudentScore;
 import com.javatest.service.RunPythonService;
 import com.javatest.util.ConfigProperties;
 import com.javatest.util.RunPythonUtil;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
 @Service

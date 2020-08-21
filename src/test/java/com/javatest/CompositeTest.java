@@ -1,6 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.CompositePo.*;
+import com.javatest.domain.CompositePo.*;
 
 public class CompositeTest {
 

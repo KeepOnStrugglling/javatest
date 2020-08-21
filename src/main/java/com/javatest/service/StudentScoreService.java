@@ -1,6 +1,6 @@
 package com.javatest.service;
 
-import com.javatest.po.StudentScore;
+import com.javatest.domain.StudentScore;
 
 import java.util.List;
 

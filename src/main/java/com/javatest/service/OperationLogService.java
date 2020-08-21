@@ -1,6 +1,6 @@
 package com.javatest.service;
 
-import com.javatest.po.OperationLog;
+import com.javatest.domain.OperationLog;
 import java.util.List;
 
 /**

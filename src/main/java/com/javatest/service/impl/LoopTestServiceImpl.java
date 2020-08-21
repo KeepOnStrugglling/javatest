@@ -1,7 +1,7 @@
 package com.javatest.service.impl;
 
-import com.javatest.dao.StudentScoreMapper;
-import com.javatest.po.StudentScore;
+import com.javatest.mapper.StudentScoreMapper;
+import com.javatest.domain.StudentScore;
 import com.javatest.service.RunPythonService;
 import com.javatest.service.StudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;

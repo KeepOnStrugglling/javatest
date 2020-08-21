@@ -3,10 +3,9 @@ package com.javatest.schedule.quartz.simpleDemo;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.CronCalendar;
-import org.quartz.impl.calendar.DailyCalendar;
+import org.quartz.impl.triggers.CronTriggerImpl;
 
 import java.text.ParseException;
-import java.util.Calendar;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 

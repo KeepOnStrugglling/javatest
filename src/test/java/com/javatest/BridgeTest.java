@@ -1,6 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.BridgePo.*;
+import com.javatest.domain.BridgePo.*;
 
 public class BridgeTest {
     public static void main(String[] args) {

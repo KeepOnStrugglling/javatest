@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 //@ComponentScan(basePackages = "com.javatest")
-@MapperScan("com.javatest.dao")
+@MapperScan("com.javatest.mapper")
 @ServletComponentScan
-//@ImportResource(locations = { "classpath:properties/cxf-config.xml" })  // cxf提供restful服务的配置引入
+//@ImportResource(locations = { "classpath:config/cxf-config.xml" })  // cxf提供restful服务的配置引入
 @EnableScheduling
 public class JavaTestApplication {
     public static void main(String[] args) {

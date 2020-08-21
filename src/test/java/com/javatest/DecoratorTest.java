@@ -1,6 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.DecoratorPo.*;
+import com.javatest.domain.DecoratorPo.*;
 
 public class DecoratorTest {
     public static void main(String[] args) {

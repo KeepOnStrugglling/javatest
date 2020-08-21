@@ -1,8 +1,8 @@
 package com.javatest.aspect;
 
 import com.alibaba.fastjson.JSON;
-import com.javatest.po.ExceptionLog;
-import com.javatest.po.OperationLog;
+import com.javatest.domain.ExceptionLog;
+import com.javatest.domain.OperationLog;
 import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;

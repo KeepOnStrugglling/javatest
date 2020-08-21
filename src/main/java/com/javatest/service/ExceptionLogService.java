@@ -1,6 +1,6 @@
 package com.javatest.service;
 
-import com.javatest.po.ExceptionLog;
+import com.javatest.domain.ExceptionLog;
 
 import java.util.List;
 

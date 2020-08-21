@@ -1,6 +1,6 @@
 package com.javatest.service;
 
-import com.javatest.po.StudentScore4JRS;
+import com.javatest.domain.StudentScore4JRS;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

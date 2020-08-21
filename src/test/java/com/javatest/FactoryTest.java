@@ -1,9 +1,9 @@
 package com.javatest;
 
-import com.javatest.po.FactoryPo.AbstractFactory;
-import com.javatest.po.FactoryPo.Car;
-import com.javatest.po.FactoryPo.FactoryProducer;
-import com.javatest.po.FactoryPo.Mask;
+import com.javatest.domain.FactoryPo.AbstractFactory;
+import com.javatest.domain.FactoryPo.Car;
+import com.javatest.domain.FactoryPo.FactoryProducer;
+import com.javatest.domain.FactoryPo.Mask;
 
 import java.util.Scanner;
 

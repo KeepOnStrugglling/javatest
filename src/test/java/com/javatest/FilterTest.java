@@ -1,6 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.FilterPo.*;
+import com.javatest.domain.FilterPo.*;
 
 import java.util.ArrayList;
 import java.util.List;

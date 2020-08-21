@@ -43,3 +43,5 @@ endpoints:
     sensitive: false
 cxf:
   path: /webservice
+#quartz:
+#  enabled: true

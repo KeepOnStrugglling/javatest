@@ -1,8 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.BuilderPo.*;
-
-import java.util.Scanner;
+import com.javatest.domain.BuilderPo.*;
 
 public class BuilderTest {
 //    public static void main(String[] args) {

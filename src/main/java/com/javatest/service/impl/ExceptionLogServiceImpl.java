@@ -1,7 +1,7 @@
 package com.javatest.service.impl;
 
-import com.javatest.dao.ExceptionLogMapper;
-import com.javatest.po.ExceptionLog;
+import com.javatest.mapper.ExceptionLogMapper;
+import com.javatest.domain.ExceptionLog;
 import com.javatest.service.ExceptionLogService;
 import org.springframework.stereotype.Service;
 

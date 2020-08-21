@@ -1,6 +1,6 @@
 package com.javatest;
 
-import com.javatest.po.PhototypePo.*;
+import com.javatest.domain.PhototypePo.*;
 
 import java.io.IOException;
 

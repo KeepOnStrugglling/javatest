@@ -1,8 +1,7 @@
 package com.javatest;
 
-import com.javatest.po.AdapterPo.AdapterChange;
-import com.javatest.po.AdapterPo.AdapterChange2;
-import com.javatest.po.AdapterPo.AmericanFan;
+import com.javatest.domain.AdapterPo.AdapterChange2;
+import com.javatest.domain.AdapterPo.AmericanFan;
 
 public class AdapterTest {
 //    public static void main(String[] args) {

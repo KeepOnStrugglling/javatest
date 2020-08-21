@@ -63,12 +63,6 @@
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.3</version>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <!--<version>3.8.1</version>-->
-            <scope>test</scope>
-        </dependency>
         <!--热部署配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -84,16 +78,15 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.51</version>
         </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.5</version>
-        </dependency>
+
+        <!--jython-->
         <dependency>
             <groupId>org.python</groupId>
             <artifactId>jython-standalone</artifactId>
             <version>2.7.1</version>
         </dependency>
+
+        <!--RSA-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -134,17 +127,16 @@
             <version>23.0</version>
         </dependency>
 
-        <!--创建ScheduledExecutorService线程池所需依赖，阿里推荐-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
 
+        <!--引入quartz-->
         <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <!--<version>2.3.2</version>-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
     </dependencies>
@@ -153,16 +145,18 @@
         <resources>
             <!--下面将java文件夹中除了java文件之外的所有文件都视为resources，
                 这意味着dao层的xml可以直接放在java文件夹中，而不用放在resources文件夹也能正常使用-->
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-                <filtering>false</filtering>
-            </resource>
+            <!--觉得没必要将xml放在java文件夹，所以还是注释掉吧-->
+            <!--<resource>-->
+                <!--<directory>src/main/java</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/*.*</include>-->
+                <!--</includes>-->
+                <!--<excludes>-->
+                    <!--<exclude>**/*.java</exclude>-->
+                <!--</excludes>-->
+                <!--<filtering>false</filtering>-->
+            <!--</resource>-->
+
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>

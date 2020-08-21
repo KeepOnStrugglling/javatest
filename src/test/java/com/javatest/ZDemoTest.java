@@ -1,7 +1,7 @@
 package com.javatest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.javatest.po.StudentScore;
+import com.javatest.domain.StudentScore;
 import com.javatest.util.JacksonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;

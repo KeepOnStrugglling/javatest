@@ -1,6 +1,6 @@
 package com.javatest.controller;
 
-import com.javatest.po.StudentScore;
+import com.javatest.domain.StudentScore;
 import com.javatest.service.StudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;

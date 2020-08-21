@@ -1,8 +1,8 @@
 package com.javatest.service.impl;
 
-import com.javatest.dao.StudentScoreMapper;
-import com.javatest.po.StudentScore;
-import com.javatest.po.StudentScore4JRS;
+import com.javatest.mapper.StudentScoreMapper;
+import com.javatest.domain.StudentScore;
+import com.javatest.domain.StudentScore4JRS;
 import com.javatest.service.StudentScoreService4JRS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

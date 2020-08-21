@@ -1,6 +1,6 @@
 package com.javatest.webservice.server.impl;
 
-import com.javatest.po.StudentScore;
+import com.javatest.domain.StudentScore;
 import com.javatest.service.StudentScoreService;
 import com.javatest.webservice.server.CXFTestService;
 import org.springframework.beans.factory.annotation.Autowired;
