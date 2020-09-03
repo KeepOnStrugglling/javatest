@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * (OperationLog)表数据库访问层
  *
- * @author hjw
+ * @author azure
  * @since 2020-04-16 17:20:05
  */
 @Repository

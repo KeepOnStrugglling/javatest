@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * (ExceptionLog)实体类
  *
- * @author hjw
+ * @author azure
  * @since 2020-04-17 14:55:58
  */
 public class ExceptionLog implements Serializable {

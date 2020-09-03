@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * (OperationLog)实体类
  *
- * @author hjw
+ * @author azure
  * @since 2020-04-16 17:20:05
  */
 public class OperationLog implements Serializable {

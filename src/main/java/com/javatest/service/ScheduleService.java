@@ -1,19 +1,15 @@
-package com.javatest.mapper;
+package com.javatest.service;
 
 import com.javatest.domain.Schedule;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * (Schedule)表数据库访问层
+ * (Schedule)表服务接口
  *
  * @author azure
- * @since 2020-08-21 15:16:11
+ * @since 2020-09-01 09:37:15
  */
-@Repository
-public interface ScheduleMapper {
+public interface ScheduleService {
 
     Schedule selectByPrimaryKey(Integer id);
 
@@ -29,6 +25,5 @@ public interface ScheduleMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-    @Select("select * from studentscore.schedule where status=0")
     List<Schedule> getRunnableSchdules();
 }

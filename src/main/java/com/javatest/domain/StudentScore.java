@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * (StudentScore)实体类
  *
- * @author makejava
+ * @author azure
  * @since 2019-09-30 11:07:00
  */
 public class StudentScore implements Serializable {

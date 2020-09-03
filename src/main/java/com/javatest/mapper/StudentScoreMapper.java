@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * (StudentScore)表数据库访问层
  *
- * @author makejava
+ * @author azure
  * @since 2019-09-30 11:07:00
  */
 @Repository

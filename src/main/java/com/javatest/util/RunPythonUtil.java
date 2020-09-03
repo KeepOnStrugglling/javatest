@@ -20,7 +20,7 @@ import java.util.Properties;
 /**
  * java执行python的工具类
  *  使用条件，python代码中有一个main方法，其他代码都在main方法中执行
- * @author hjw
+ * @author azure
  */
 
 @Component

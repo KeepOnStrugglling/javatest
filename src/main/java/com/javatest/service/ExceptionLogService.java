@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * (ExceptionLog)表服务接口
  *
- * @author hjw
+ * @author azure
  * @since 2020-04-16 17:21:59
  */
 public interface ExceptionLogService {

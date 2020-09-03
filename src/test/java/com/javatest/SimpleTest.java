@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -138,5 +139,23 @@ public class SimpleTest {
         }
         System.out.println(huawei.toString());
 
+    }
+
+    @Test
+    public void test12(){
+        long filesize = 123456789L;
+        double number = (double) filesize;
+        String result = null;
+        DecimalFormat decimalFormat = new DecimalFormat("#.000");
+        if (number/1073741824>1) {   // 1073741824=1024*1024*1024
+            result = decimalFormat.format(number/1073741824) + " gb";
+        } else if (number/1048576>1) {  //1048576=1024*1024
+            result = decimalFormat.format(number/1048576) + " mb";
+        } else if (number/1024>1) {
+            result = decimalFormat.format(number/1024) + " kb";
+        } else {
+            result = number + " b";
+        }
+        System.out.println(result);
     }
 }

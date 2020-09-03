@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * (Schedule)实体类
  *
- * @author hjw
+ * @author azure
  * @since 2020-08-21 15:16:11
  */
 public class Schedule implements Serializable {

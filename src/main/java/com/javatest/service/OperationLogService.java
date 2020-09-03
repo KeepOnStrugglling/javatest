@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * (OperationLog)表服务接口
  *
- * @author hjw
+ * @author azure
  * @since 2020-04-16 17:20:13
  */
 public interface OperationLogService {
