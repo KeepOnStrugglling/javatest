@@ -3,6 +3,7 @@ package com.javatest.schedule.quartz.projectSample.service;
 import com.javatest.domain.Schedule;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author azure
@@ -14,13 +15,15 @@ public interface QuartzManager {
 
     void addJob(Schedule schedule);
 
-    void modifyJob(Schedule schedule);
+    void addJob(String jobName, Class<? extends org.quartz.Job> jobClazz, String cronExpression, Map<String, Object> jobDataMap);
 
-    void removeJob(Schedule schedule);
+    void modifyJob(String jobName, String cronExpression, Map<String,Object> jobDataMap);
 
-    void resumeJob(Schedule schedule);
+    void removeJob(String jobName);
 
-    void pauseJob(Schedule schedule);
+    void resumeJob(String jobName);
+
+    void pauseJob(String jobName);
 
     List<String> getAllJob();
 
