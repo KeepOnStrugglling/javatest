@@ -41,7 +41,9 @@ endpoints:
   actuator:
     enabled: true
     sensitive: false
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true       #开启mybatis驼峰命名转换
+  mapper-locations: classpath:mapper/*.xml
 cxf:
   path: /webservice
-#quartz:
-#  enabled: true

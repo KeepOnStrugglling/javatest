@@ -1,7 +1,9 @@
 package com.javatest;
 
+import com.javatest.domain.Schedule;
 import com.javatest.mapper.StudentScoreMapper;
 import com.javatest.domain.StudentScore;
+import com.javatest.service.ScheduleService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,8 @@ public class SimpleTest {
 
     @Autowired
     private StudentScoreMapper studentScoreMapper;
+    @Autowired
+    private ScheduleService scheduleService;
 
     @Test
     public void test1() {
@@ -157,5 +161,13 @@ public class SimpleTest {
             result = number + " b";
         }
         System.out.println(result);
+    }
+
+    @Test
+    public void test13(){
+        Schedule schedule = new Schedule();
+        schedule.setId(2);
+        schedule.setScheduleName("测试修改2");
+        scheduleService.updateByPrimaryKey(schedule);
     }
 }

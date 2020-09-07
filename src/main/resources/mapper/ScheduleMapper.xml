@@ -135,7 +135,7 @@
             task_id = #{taskId,jdbcType=VARCHAR},            
             status = #{status,jdbcType=INTEGER},            
             start_time = #{startTime,jdbcType=TIMESTAMP},            
-            end_time = #{endTime,jdbcType=TIMESTAMP},            
+            end_time = #{endTime,jdbcType=TIMESTAMP},
             next_time = #{nextTime,jdbcType=TIMESTAMP},            
             creator_id = #{creatorId,jdbcType=VARCHAR},            
             creator_time = #{creatorTime,jdbcType=TIMESTAMP}

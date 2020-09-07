@@ -70,7 +70,8 @@ public class QuartzManagerImpl implements QuartzManager {
                     .withIdentity(schedule.getTaskId(),TRIGGER_GROUP_NAME)  // 用task的id作为jobKey，指定分组
                     .withSchedule(CronScheduleBuilder.cronSchedule(schedule.getCronExpression()))   // 指定cron表达式
                     .startNow().build();
-
+            // 将调度任务添加到jobDataMap中
+            trigger.getJobDataMap().put("schedule",schedule);
             scheduler.scheduleJob(jobDetail,trigger);
         } catch (SchedulerException e) {
             e.printStackTrace();

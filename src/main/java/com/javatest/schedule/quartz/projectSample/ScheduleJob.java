@@ -24,14 +24,14 @@ public class ScheduleJob implements Job {
         // 获取Spring容器中的bean
 //        getBeanFromSpringContext();
         // 获取调度信息
-        Schedule schedule = (Schedule) context.getMergedJobDataMap().get("Schedule");
+        Schedule schedule = (Schedule) context.getMergedJobDataMap().get("schedule");
         // 通过schedule对象获取相应需要执行的任务，并执行。这里就只是输出taskId模拟任务执行
         System.out.println("执行任务：" + schedule.getTaskId());
 
         // 我们可以把下一次执行的时间保存起来，这步操作视需求而定，非必须
         Date nextTime = context.getNextFireTime();
         schedule.setNextTime(nextTime);
-        service.updateByPrimaryKey(schedule);
+        service.updateByPrimaryKeySelective(schedule);
     }
 
 //    private void getBeanFromSpringContext() {
