@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author azure
@@ -55,7 +52,7 @@ public class QuartzManagerImpl implements QuartzManager {
 
     /**
      * 根据Schedule实体类添加调度任务
-     *  **注意：需要确保scheduler已经启动，或者添加任务后会马上启动**
+     *  **注意：需要确保scheduler已经启动，或者添加任务后会马上启动，否则则需要scheduler.start();**
      * @param schedule
      */
     @Override
@@ -69,7 +66,9 @@ public class QuartzManagerImpl implements QuartzManager {
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(schedule.getTaskId(),TRIGGER_GROUP_NAME)  // 用task的id作为jobKey，指定分组
                     .withSchedule(CronScheduleBuilder.cronSchedule(schedule.getCronExpression()))   // 指定cron表达式
-                    .startNow().build();
+                    .startAt(schedule.getStartTime())   // 指定开始时间
+                    .endAt(schedule.getEndTime())   // 指定结束时间
+                    .build();
             // 将调度任务添加到jobDataMap中
             trigger.getJobDataMap().put("schedule",schedule);
             scheduler.scheduleJob(jobDetail,trigger);
@@ -83,7 +82,7 @@ public class QuartzManagerImpl implements QuartzManager {
      * @param jobName 任务名称
      * @param jobClazz 需要执行的job类，也就是Job接口的实现类
      * @param cronExpression cron表达式
-     * @param jobDataMap 参数集合
+     * @param jobDataMap 参数集合，注意，里面要包含schedule
      */
     @Override
     public void addJob(String jobName, Class<? extends org.quartz.Job> jobClazz, String cronExpression, Map<String, Object> jobDataMap) {
@@ -114,7 +113,7 @@ public class QuartzManagerImpl implements QuartzManager {
      * 更新调度任务，可以更新调度频率或参数
      * @param jobName 任务名称
      * @param cronExpression cron表达式
-     * @param jobDataMap 参数集合
+     * @param jobDataMap 参数集合，注意，里面要包含schedule
      */
     @Override
     public void modifyJob(String jobName, String cronExpression, Map<String,Object> jobDataMap) {
