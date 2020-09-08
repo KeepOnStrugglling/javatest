@@ -60,4 +60,9 @@ public class QuartzController {
     public void shutDownSchedule() {
         quartzManager.shutdownSchedule();
     }
+
+    @GetMapping("/getAllJob")
+    public void getAllJob() {
+        quartzManager.getAllJob();
+    }
 }

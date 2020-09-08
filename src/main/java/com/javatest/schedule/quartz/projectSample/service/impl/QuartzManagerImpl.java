@@ -53,10 +53,14 @@ public class QuartzManagerImpl implements QuartzManager {
     /**
      * 根据Schedule实体类添加调度任务
      *  **注意：需要确保scheduler已经启动，或者添加任务后会马上启动，否则则需要scheduler.start();**
-     * @param schedule
+     * @param schedule schedule对象
      */
     @Override
     public void addJob(Schedule schedule) {
+        // 确保initScheduler启动的调度任务符合时间有效性
+        if (checkTime(schedule.getStartTime(),schedule.getEndTime())) {
+            return;
+        }
         try {
             // 创建jobDetail
             JobDetail jobDetail = JobBuilder.newJob(ScheduleJob.class)
@@ -78,6 +82,16 @@ public class QuartzManagerImpl implements QuartzManager {
     }
 
     /**
+     * 检查时间有效性
+     */
+    private boolean checkTime(Date startTime, Date endTime) {
+        if (startTime==null || endTime==null || startTime.getTime()>=endTime.getTime()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 根据cron表达式添加调度任务
      * @param jobName 任务名称
      * @param jobClazz 需要执行的job类，也就是Job接口的实现类
@@ -87,6 +101,8 @@ public class QuartzManagerImpl implements QuartzManager {
     @Override
     public void addJob(String jobName, Class<? extends org.quartz.Job> jobClazz, String cronExpression, Map<String, Object> jobDataMap) {
         try {
+            // 获取参数
+            Schedule schedule = (Schedule) jobDataMap.get("schedule");
             // 创建jobDetail
             JobDetail jobDetail = JobBuilder.newJob(jobClazz)
                     .withIdentity(jobName,JOB_GROUP_NAME)
@@ -95,7 +111,9 @@ public class QuartzManagerImpl implements QuartzManager {
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(jobName,TRIGGER_GROUP_NAME)
                     .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))   // 指定cron表达式
-                    .startNow().build();
+                    .startAt(schedule.getStartTime())
+                    .endAt(schedule.getEndTime())
+                    .build();
             // 添加参数
             trigger.getJobDataMap().putAll(jobDataMap);
 
@@ -124,15 +142,21 @@ public class QuartzManagerImpl implements QuartzManager {
             // 获取原来的trigger,这里不能用多态，必须强转为CronTrigger，否则在下面调用getTriggerBuilder时无法确定是返回哪种TriggerBuilder
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
 
+            // 获取参数
+            Schedule schedule = (Schedule) jobDataMap.get("schedule");
+
             // 根据新的cron表达式构建新的trigger
             if (StringUtils.isNotBlank(cronExpression)) {
-                trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
+                trigger = trigger.getTriggerBuilder()
+                        .withIdentity(triggerKey)
+                        .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
+                        .startAt(schedule.getStartTime())
+                        .endAt(schedule.getEndTime())
+                        .build();
             }
 
             // 更新参数
-            if (jobDataMap != null) {
-                trigger.getJobDataMap().putAll(jobDataMap);
-            }
+            trigger.getJobDataMap().putAll(jobDataMap);
 
             // 用新的trigger执行job
             scheduler.rescheduleJob(triggerKey,trigger);
@@ -196,6 +220,7 @@ public class QuartzManagerImpl implements QuartzManager {
             Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.anyGroup());
             for (JobKey jobKey : jobKeys) {
                 jobNameList.add(jobKey.getName());
+                System.out.println("调度任务：" + jobKey.getName());
             }
         } catch (SchedulerException e) {
             e.printStackTrace();
