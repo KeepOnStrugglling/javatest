@@ -3,6 +3,7 @@ package com.javatest.controller;
 import com.javatest.domain.Schedule;
 import com.javatest.enums.ScheduleStatusEnum;
 import com.javatest.schedule.quartz.projectSample.service.QuartzManager;
+import com.javatest.schedule.quartz.projectSample.service.ScheduleManageService;
 import com.javatest.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class QuartzController {
     private QuartzManager quartzManager;
     @Autowired
     private ScheduleService scheduleService;
+    @Autowired
+    private ScheduleManageService manageService;
 
     @PostMapping("/addSchedule")
     public void addSchedule(@RequestBody Schedule schedule) {
@@ -64,5 +67,10 @@ public class QuartzController {
     @GetMapping("/getAllJob")
     public void getAllJob() {
         quartzManager.getAllJob();
+    }
+
+    @GetMapping("/refreshAllJob")
+    public void refreshAllJob() {
+        manageService.refreshSchedules();
     }
 }

@@ -8,6 +8,8 @@ import com.javatest.service.ScheduleService;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,8 @@ import java.util.*;
 @Service
 @Transactional
 public class QuartzManagerImpl implements QuartzManager {
+
+    private Logger log = LoggerFactory.getLogger(QuartzManagerImpl.class);
 
     private static final String JOB_GROUP_NAME = "DEFAULT_JOBGROUP_NAME";
     private static final String TRIGGER_GROUP_NAME = "DEFAULT_TRIGGERGROUP_NAME";
@@ -40,6 +44,7 @@ public class QuartzManagerImpl implements QuartzManager {
      */
     @Override
     public void initScheduler() {
+        log.info("正在初始化定时调度...");
         startAllJobs();
 
         List<Schedule> schedules = scheduleService.getRunnableSchdules();
@@ -48,6 +53,7 @@ public class QuartzManagerImpl implements QuartzManager {
                 this.addJob(schedule);
             }
         }
+        log.info("完成定时调度任务的初始化！");
     }
 
     /**
@@ -76,6 +82,8 @@ public class QuartzManagerImpl implements QuartzManager {
             // 将调度任务添加到jobDataMap中
             trigger.getJobDataMap().put("schedule",schedule);
             scheduler.scheduleJob(jobDetail,trigger);
+
+            log.info("新增定时任务：" + schedule.getTaskId());
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -84,8 +92,10 @@ public class QuartzManagerImpl implements QuartzManager {
     /**
      * 检查时间有效性
      */
-    private boolean checkTime(Date startTime, Date endTime) {
-        if (startTime==null || endTime==null || startTime.getTime()>=endTime.getTime()) {
+    public static boolean checkTime(Date startTime, Date endTime) {
+        System.out.println(System.currentTimeMillis());
+        System.out.println(endTime.getTime());
+        if (startTime==null || endTime==null || startTime.getTime()>=endTime.getTime() || System.currentTimeMillis()>=endTime.getTime()) {
             return true;
         }
         return false;
@@ -122,6 +132,7 @@ public class QuartzManagerImpl implements QuartzManager {
             if (!scheduler.isShutdown()) {
                 scheduler.start();
             }
+            log.info("新增定时任务：" + jobName);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -160,6 +171,7 @@ public class QuartzManagerImpl implements QuartzManager {
 
             // 用新的trigger执行job
             scheduler.rescheduleJob(triggerKey,trigger);
+            log.info("定时调度任务：" + jobName + " 已更新");
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -178,7 +190,7 @@ public class QuartzManagerImpl implements QuartzManager {
             scheduler.unscheduleJob(TriggerKey.triggerKey(jobName, TRIGGER_GROUP_NAME));
             // 删除任务
             scheduler.deleteJob(JobKey.jobKey(jobName, JOB_GROUP_NAME));
-
+            log.info("删除调度任务：" + jobName);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -192,6 +204,7 @@ public class QuartzManagerImpl implements QuartzManager {
     public void resumeJob(String jobName) {
         try {
             scheduler.resumeJob(JobKey.jobKey(jobName,JOB_GROUP_NAME));
+            log.info("恢复调度任务：" + jobName);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -205,6 +218,7 @@ public class QuartzManagerImpl implements QuartzManager {
     public void pauseJob(String jobName) {
         try {
             scheduler.pauseJob(JobKey.jobKey(jobName,JOB_GROUP_NAME));
+            log.info("暂停调度任务：" + jobName);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -220,7 +234,7 @@ public class QuartzManagerImpl implements QuartzManager {
             Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.anyGroup());
             for (JobKey jobKey : jobKeys) {
                 jobNameList.add(jobKey.getName());
-                System.out.println("调度任务：" + jobKey.getName());
+                log.info("调度任务：" + jobKey.getName());
             }
         } catch (SchedulerException e) {
             e.printStackTrace();
@@ -247,6 +261,7 @@ public class QuartzManagerImpl implements QuartzManager {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();
+                log.info("已关闭调度功能");
             }
         } catch (SchedulerException e) {
             e.printStackTrace();
