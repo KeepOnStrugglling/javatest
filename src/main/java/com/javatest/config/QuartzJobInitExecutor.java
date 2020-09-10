@@ -9,7 +9,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-@Component
+/**
+ * @author azure
+ * 用于延时初始化调度任务
+ */
+//@Component
 public class QuartzJobInitExecutor {
 
     private final QuartzManager quartzManager;
