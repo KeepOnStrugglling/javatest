@@ -170,4 +170,10 @@ public class SimpleTest {
         schedule.setScheduleName("测试修改2");
         scheduleService.updateByPrimaryKey(schedule);
     }
+
+    @Test
+    public void test14(){
+        BigDecimal a = new BigDecimal("-520000");
+        System.out.println(a.abs().compareTo(new BigDecimal("10000")) > 0 ? (a.signum() < 0 ? "-" : "") + "10000" : a.toString());
+    }
 }

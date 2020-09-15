@@ -25,7 +25,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Aspect     // 指定当前类为切面类
+/**
+ * @author azure
+ * 利用aop切面和环绕通知实现日志记录
+ *   **注意：如果使用异常统一处理，则不能使用环绕通知，因为异常会首先被切面类捕捉，处理后并没有继续向外抛出，因而不会触发异常统一处理！！**
+ */
+//@Aspect     // 指定当前类为切面类
 @Component  // 创建切面类对象
 public class LoggerAspect2 {
 
