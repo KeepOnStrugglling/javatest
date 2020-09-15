@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * 用于定时刷新调度任务：实现延迟开启调度，定时刷新调度
  * 这时候就不需要QuartzJobInitListener，QuartzConfig也不用setStartupDelay
  */
-@Component
+//@Component
 public class QuartzJobInit {
 
     private final ScheduleManageService manageService;

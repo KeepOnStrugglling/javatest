@@ -25,7 +25,7 @@ public class QuartzConfig {
     public SchedulerFactoryBean schedulerFactoryBean(){
         SchedulerFactoryBean factoryBean = new SchedulerFactoryBean();
         factoryBean.setOverwriteExistingJobs(true);     // 覆盖已存在的调度任务
-        factoryBean.setStartupDelay(10);    // 设置延迟启动调度的时间，避免系统启动未完全就进行调度
+        factoryBean.setStartupDelay(5);    // 设置延迟启动调度的时间，避免系统启动未完全就进行调度
         factoryBean.setJobFactory(jobFactory);  // 解决quartz无法注入spring bean问题
         return factoryBean;
     }

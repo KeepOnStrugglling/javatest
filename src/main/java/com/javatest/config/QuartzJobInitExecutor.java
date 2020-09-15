@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * @author azure
  * 用于延时初始化调度任务
  */
-//@Component
+@Component
 public class QuartzJobInitExecutor {
 
     private final QuartzManager quartzManager;
@@ -31,6 +31,6 @@ public class QuartzJobInitExecutor {
             public void run() {
                 quartzManager.initScheduler();
             }
-        }, 15, TimeUnit.SECONDS);
+        }, 7, TimeUnit.SECONDS);
     }
 }

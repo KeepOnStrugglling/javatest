@@ -93,8 +93,6 @@ public class QuartzManagerImpl implements QuartzManager {
      * 检查时间有效性
      */
     public static boolean checkTime(Date startTime, Date endTime) {
-        System.out.println(System.currentTimeMillis());
-        System.out.println(endTime.getTime());
         if (startTime==null || endTime==null || startTime.getTime()>=endTime.getTime() || System.currentTimeMillis()>=endTime.getTime()) {
             return true;
         }
