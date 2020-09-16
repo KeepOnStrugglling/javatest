@@ -1,5 +1,7 @@
 package com.javatest.exception;
 
+import com.javatest.enums.ReturnCode;
+import com.javatest.response.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,14 +12,14 @@ public class BaseExceptionHandler {
 
     // 用于处理指定的异常
     @ExceptionHandler(NullPointerException.class)
-    public BaseException formNullPointerException(NullPointerException e) {
-        return new MyException(e.getMessage());
+    public <T> Result<T> formNullPointerException(T data) {
+        return Result.fail(new BaseException(ReturnCode.NULL_POINTER),data);
     }
 
     // 用于处理自定义异常
     @ExceptionHandler(MyException.class)
-    public BaseException formMyException(MyException e) {
-        return new MyException(e.getMessage());
+    public Result formMyException() {
+        return Result.fail(new BaseException(ReturnCode.MY_EXCEPTION));
     }
 
     // 用于处理其他异常
