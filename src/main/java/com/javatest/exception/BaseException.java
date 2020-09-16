@@ -1,15 +1,13 @@
 package com.javatest.exception;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author azure
  * 自定义基础异常
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class BaseException extends Exception {
 
