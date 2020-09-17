@@ -21,9 +21,11 @@ public enum ReturnCode {
     USER_LOGIN_ERROR(2001,"用户登录失败，请检查账号名和密码"),
     USER_PASS_NOTREPEAT(2002,"两次密码不一致，请重新输入"),
     USER_NOAUTH(2003,"用户没有访问权限"),
-    USER_NOT_EXIST(2004,"用户不存在");
+    USER_NOT_EXIST(2004,"用户不存在"),
 
     /* 接口异常 */
+    NULL_POINTER(3001,"空指针异常"),
+    MY_EXCEPTION(3005,"自定义异常");
 
 
     private final Integer code;

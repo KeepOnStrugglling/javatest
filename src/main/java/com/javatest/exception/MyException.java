@@ -1,10 +1,10 @@
 package com.javatest.exception;
 
+import com.javatest.enums.ReturnCode;
+
 public class MyException extends BaseException {
 
-    private final static int ERROR_CODE = 5001;
-
     public MyException(String msg) {
-        super(ERROR_CODE,msg);
+        super(ReturnCode.MY_EXCEPTION);
     }
 }

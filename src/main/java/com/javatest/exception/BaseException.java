@@ -1,5 +1,6 @@
 package com.javatest.exception;
 
+import com.javatest.enums.ReturnCode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,13 @@ public class BaseException extends Exception {
 
     public BaseException(int code, String msg) {
         super(msg);
+        this.msg = msg;
         this.code = code;
+    }
+
+    // 根据ReturnCode构造异常
+    public BaseException(ReturnCode returnCode) {
+        super(returnCode.getMsg());
+        this.code = returnCode.getCode();
     }
 }
