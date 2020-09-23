@@ -1,6 +1,7 @@
 package com.javatest.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -14,10 +15,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -37,12 +40,36 @@ import java.util.List;
 @Component
 public class HttpRequestUtil {
 
-    // 设置超时配置
-    RequestConfig config = RequestConfig.custom()
-            .setSocketTimeout(5000)     // socket超时5s
-            .setConnectTimeout(20000)   // 连接超时20s
-            .setConnectionRequestTimeout(20000)  // 请求超时20s
-            .build();
+    //定义一个httpclient连接池
+    private PoolingHttpClientConnectionManager connectionManager;
+    // 连接配置
+    private RequestConfig config;
+
+    // 在初始化时创建资源
+    @PostConstruct
+    public void init(){
+        if (connectionManager == null) {
+            connectionManager = new PoolingHttpClientConnectionManager();
+            // 将最大连接数增加到200
+            connectionManager.setMaxTotal(200);
+            // 将每个路由的默认最大连接数增加到20
+            connectionManager.setDefaultMaxPerRoute(20);
+            // 设置超时配置
+            config = RequestConfig.custom()
+                    .setSocketTimeout(5000)     // socket超时5s
+                    .setConnectTimeout(20000)   // 连接超时20s
+                    .setConnectionRequestTimeout(20000)  // 请求超时20s
+                    .build();
+        }
+        log.info("==============httpclient池初始化完毕================");
+    }
+
+    // 提供一个获取httpclient的方法
+    public CloseableHttpClient getHttpClient(){
+        return HttpClients.custom().setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(config).build();
+    }
+
 
     /**
      * 请求转发
@@ -55,8 +82,9 @@ public class HttpRequestUtil {
         String content = null;
 
         // HttpClients.createDefault()会创建一个httpclient连接池，线程数默认为5，所以不需要手动close
-        // 但每次调用都会创建httpclient连接池，请求结束后gc回首时也会耗资源，在多并发情况下建议手动维护一个httpClient池
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+//        CloseableHttpClient httpClient = HttpClients.createDefault();
+        // 但每次调用都会创建httpclient连接池，请求结束后gc回首时也会耗资源，改用自定义的httpclient池中获取httpclient
+        CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse response = null;
         HttpRequestBase httpRequest = null;
 
@@ -109,16 +137,18 @@ public class HttpRequestUtil {
      */
     private HttpRequestBase postRequest(String exactUrl, HttpServletRequest req, HttpServletResponse res) {
         HttpPost httpPost = new HttpPost(exactUrl);
-        httpPost.setHeader("Content-Type", req.getHeader("Content-Type"));
-        StringEntity entity = null;
-        if (req.getContentType().contains("json")) {
-            entity = jsonData(req);  //填充json数据
-        } else {
-            entity = formData(req);  //填充form数据
+        String contentType = req.getHeader("Content-Type");
+        if (StringUtils.isNotBlank(contentType)) {
+            httpPost.setHeader("Content-Type", req.getHeader("Content-Type"));
+            StringEntity entity = null;
+            if (req.getContentType().contains("json")) {
+                entity = jsonData(req);  //填充json数据
+            } else {
+                entity = formData(req);  //填充form数据
+            }
+            // todo 传输文件时的处理
+            httpPost.setEntity(entity);
         }
-        // todo 传输文件时的处理
-        httpPost.setEntity(entity);
-//        httpPost.setConfig(config);
         return httpPost;
     }
 

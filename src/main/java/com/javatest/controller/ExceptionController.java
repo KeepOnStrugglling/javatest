@@ -2,13 +2,21 @@ package com.javatest.controller;
 
 import com.javatest.exception.MyException;
 import com.javatest.response.Result;
+import com.javatest.util.HttpRequestUtil;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/excep")
 public class ExceptionController {
+
+    @Autowired
+    private HttpRequestUtil httpRequestUtil;
 
     @RequestMapping("/error")
     public String error(){
@@ -35,5 +43,10 @@ public class ExceptionController {
     @RequestMapping("/normal1")
     public Result normal1(){
         return Result.success("ok");
+    }
+
+    @RequestMapping("/normal2")
+    public String normal2(HttpServletRequest request, HttpServletResponse response){
+        return httpRequestUtil.dispatch("http://localhost:9010/javatest/excep/error3",request,response);
     }
 }
