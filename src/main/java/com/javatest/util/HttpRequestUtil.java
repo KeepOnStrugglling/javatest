@@ -6,6 +6,8 @@ import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,14 +15,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -59,15 +64,33 @@ public class HttpRequestUtil {
                     .setSocketTimeout(5000)     // socket超时5s
                     .setConnectTimeout(20000)   // 连接超时20s
                     .setConnectionRequestTimeout(20000)  // 请求超时20s
+                    .setCookieSpec(CookieSpecs.STANDARD_STRICT) // 设置cookie管理
                     .build();
         }
         log.info("==============httpclient池初始化完毕================");
     }
 
-    // 提供一个获取httpclient的方法
-    public CloseableHttpClient getHttpClient(){
+    /**
+     * 提供一个获取httpclient的方法
+     */
+    public CloseableHttpClient getHttpClient(HttpServletRequest req){
+        // 转发时携带登录的cookies信息
+        CookieStore cookieStore = new BasicCookieStore();
+        Cookie[] cookies = req.getCookies();
+        for (Cookie cookie : cookies) {
+            cookieStore.addCookie(convertCookie(cookie));
+        }
         return HttpClients.custom().setConnectionManager(connectionManager)
+                .setDefaultCookieStore(cookieStore)
                 .setDefaultRequestConfig(config).build();
+    }
+
+    // 将servlet的cookie转化为httpclient的BasicClientCookie
+    private BasicClientCookie convertCookie(Cookie cookie) {
+        BasicClientCookie basicClientCookie = new BasicClientCookie(cookie.getName(),cookie.getValue());
+        //todo cookie没有domain如何解决
+        basicClientCookie.setDomain(cookie.getDomain());
+        return basicClientCookie;
     }
 
 
@@ -84,11 +107,9 @@ public class HttpRequestUtil {
         // HttpClients.createDefault()会创建一个httpclient连接池，线程数默认为5，所以不需要手动close
 //        CloseableHttpClient httpClient = HttpClients.createDefault();
         // 但每次调用都会创建httpclient连接池，请求结束后gc回首时也会耗资源，改用自定义的httpclient池中获取httpclient
-        CloseableHttpClient httpClient = getHttpClient();
+        CloseableHttpClient httpClient = getHttpClient(req);
         CloseableHttpResponse response = null;
         HttpRequestBase httpRequest = null;
-
-        // todo 转发时携带登录的cookies信息
 
         String method = req.getMethod();
         if (method.equals("POST")) {
@@ -119,7 +140,7 @@ public class HttpRequestUtil {
                     EntityUtils.consume(entity);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("转发出错：", e);
         }
         return content;

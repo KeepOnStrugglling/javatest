@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/excep")
@@ -47,6 +50,16 @@ public class ExceptionController {
 
     @RequestMapping("/normal2")
     public String normal2(HttpServletRequest request, HttpServletResponse response){
-        return httpRequestUtil.dispatch("http://localhost:9010/javatest/excep/error3",request,response);
+        return httpRequestUtil.dispatch("http://localhost:9010/javatest/excep/cookie",request,response);
+    }
+
+    @RequestMapping("/cookie")
+    public Result cookie(HttpServletRequest request){
+        StringBuilder sb = new StringBuilder();
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            sb.append(cookie.getName()).append(":").append(cookie.getValue()).append(";");
+        }
+        return Result.success(sb.toString());
     }
 }
