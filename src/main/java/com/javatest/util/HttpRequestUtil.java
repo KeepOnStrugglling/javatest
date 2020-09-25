@@ -22,6 +22,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -32,9 +33,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 转发请求工具类
@@ -61,7 +65,7 @@ public class HttpRequestUtil {
             connectionManager.setDefaultMaxPerRoute(20);
             // 设置超时配置
             config = RequestConfig.custom()
-                    .setSocketTimeout(5000)     // socket超时5s
+                    .setSocketTimeout(10000)     // socket超时10s
                     .setConnectTimeout(20000)   // 连接超时20s
                     .setConnectionRequestTimeout(20000)  // 请求超时20s
                     .setCookieSpec(CookieSpecs.STANDARD_STRICT) // 设置cookie管理
@@ -70,51 +74,29 @@ public class HttpRequestUtil {
         log.info("==============httpclient池初始化完毕================");
     }
 
-    /**
-     * 提供一个获取httpclient的方法
-     */
-    public CloseableHttpClient getHttpClient(HttpServletRequest req){
-        // 转发时携带登录的cookies信息
-        CookieStore cookieStore = new BasicCookieStore();
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            cookieStore.addCookie(convertCookie(cookie));
-        }
-        return HttpClients.custom().setConnectionManager(connectionManager)
-                .setDefaultCookieStore(cookieStore)
-                .setDefaultRequestConfig(config).build();
-    }
-
-    // 将servlet的cookie转化为httpclient的BasicClientCookie
-    private BasicClientCookie convertCookie(Cookie cookie) {
-        BasicClientCookie basicClientCookie = new BasicClientCookie(cookie.getName(),cookie.getValue());
-        //todo cookie没有domain如何解决
-        basicClientCookie.setDomain(cookie.getDomain());
-        return basicClientCookie;
-    }
-
 
     /**
      * 请求转发
      * @param exactUrl 转发的目标地址
+     * @param cookies  需要转发时附带的cookie的键值对，可以用map保存，也可以用list保存
      * @param req      request
      * @param res      response
      * @return 请求返回响应的字符串
      */
-    public String dispatch(String exactUrl, HttpServletRequest req, HttpServletResponse res) {
+    public String dispatch(String exactUrl, Map<String,String> cookies, HttpServletRequest req, HttpServletResponse res) {
         String content = null;
 
         // HttpClients.createDefault()会创建一个httpclient连接池，线程数默认为5，所以不需要手动close
 //        CloseableHttpClient httpClient = HttpClients.createDefault();
-        // 但每次调用都会创建httpclient连接池，请求结束后gc回首时也会耗资源，改用自定义的httpclient池中获取httpclient
-        CloseableHttpClient httpClient = getHttpClient(req);
+        // 但每次调用都会创建httpclient连接池，请求结束后gc回收时也会耗资源，改用自定义的httpclient池中获取httpclient
+        CloseableHttpClient httpClient = getHttpClient(exactUrl,cookies);
         CloseableHttpResponse response = null;
         HttpRequestBase httpRequest = null;
 
         String method = req.getMethod();
-        if (method.equals("POST")) {
+        if ("POST".equals(method)) {
             httpRequest = postRequest(exactUrl, req, res);
-        } else if (method.equals("GET")) {
+        } else if ("GET".equals(method)) {
             httpRequest = getRequest(exactUrl, req, res);
         }
         try {
@@ -131,8 +113,8 @@ public class HttpRequestUtil {
                     //entity.writeTo(res.getOutputStream());
 
                     /* 如果不想写finally对response手动close，有两种方法：
-                        1.String content = EntityUtils.toString(entity,Consts.UTF_8);	这个方法的返回值是entity里面的内容
-                        2.EntityUtils.consume(entity);
+                        1)String content = EntityUtils.toString(entity,Consts.UTF_8);	这个方法的返回值是entity里面的内容
+                        2)EntityUtils.consume(entity);
                        但一旦调用上述的两种方法，则会关闭流，不能再从CloseableHttpResponse中获取数据
                     */
                     // 2.将请求转发的返回内容转为字符串作为方法返回值返回
@@ -144,6 +126,46 @@ public class HttpRequestUtil {
             log.error("转发出错：", e);
         }
         return content;
+    }
+
+    /**
+     * 提供一个获取httpclient的方法
+     * @param exactUrl 转发地址
+     * @param cookies  需要携带的cookies键值对
+     */
+    public CloseableHttpClient getHttpClient(String exactUrl, Map<String, String> cookies){
+        // 转发时携带自定义cookies信息
+        CookieStore cookieStore = new BasicCookieStore();
+        if (cookies != null) {
+            try {
+                /* 如果要让转发后目标系统获取到该cookie，**必须指定cookie的domain为转发目标系统的域名**。*/
+                URL url = new URL(exactUrl);
+                String domain = url.getHost();
+                for (Map.Entry<String, String> entry : cookies.entrySet()) {
+                    cookieStore.addCookie(formBasicClientCookie(entry.getKey(),entry.getValue(),domain));
+                }
+
+            } catch (MalformedURLException e) {
+                log.error("解析转发地址域名失败：",e);
+            }
+        }
+
+        return HttpClients.custom().setConnectionManager(connectionManager)
+                .setDefaultCookieStore(cookieStore)
+                .setDefaultRequestConfig(config).build();
+    }
+
+    /**
+     * 构建BasicClientCookie
+     * @param name cookie的键
+     * @param value cookie的值
+     * @param domain cookie的域，只有同域的cookie才能被使用
+     */
+    private BasicClientCookie formBasicClientCookie(String name, String value, String domain) {
+        BasicClientCookie basicClientCookie = new BasicClientCookie(name,value);
+        // 设置cookie的domain值
+        basicClientCookie.setDomain(domain);
+        return basicClientCookie;
     }
 
     /**

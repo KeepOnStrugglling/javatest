@@ -192,4 +192,12 @@ public class SimpleTest {
             System.out.println(s + ",");
         }
     }
+
+    @Test
+    public void test16(){
+        Map<String, Integer> auditMap = new HashMap();
+        Integer auditNum = auditMap.get("hello");
+        if (auditNum!=null)
+        System.out.println(auditNum);
+    }
 }

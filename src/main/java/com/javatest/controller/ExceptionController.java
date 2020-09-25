@@ -48,18 +48,33 @@ public class ExceptionController {
         return Result.success("ok");
     }
 
-    @RequestMapping("/normal2")
-    public String normal2(HttpServletRequest request, HttpServletResponse response){
-        return httpRequestUtil.dispatch("http://localhost:9010/javatest/excep/cookie",request,response);
+    @RequestMapping("/dispatch")
+    public String dispatch(HttpServletRequest request, HttpServletResponse response){
+        Map<String,String> cookies = new HashMap<>();
+        cookies.put("testCookie","15973");
+        return httpRequestUtil.dispatch("http://127.0.0.1:9010/javatest/excep/cookie",cookies,request,response);
     }
 
     @RequestMapping("/cookie")
     public Result cookie(HttpServletRequest request){
         StringBuilder sb = new StringBuilder();
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            sb.append(cookie.getName()).append(":").append(cookie.getValue()).append(";");
+        if (cookies == null || cookies.length == 0) {
+            sb.append("没有找到cookie");
+        } else {
+            for (Cookie cookie : cookies) {
+                sb.append(cookie.getName()).append(":").append(cookie.getValue()).append("-").append(cookie.getDomain()).append(";");
+            }
         }
         return Result.success(sb.toString());
+    }
+
+    @RequestMapping("/addCookie")
+    public String addCookie(HttpServletRequest request, HttpServletResponse response){
+        Cookie cookie = new Cookie("test","123456");
+        cookie.setDomain("localhost");
+        cookie.setPath("/javatest");
+        response.addCookie(cookie);
+        return "ok";
     }
 }
