@@ -146,6 +146,13 @@
             <version>4.5.3</version>
         </dependency>
 
+        <!--ftp工具类支持-->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.7</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>javatest</finalName>
