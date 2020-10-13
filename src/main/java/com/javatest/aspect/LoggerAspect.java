@@ -1,11 +1,11 @@
 package com.javatest.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.javatest.domain.ExceptionLog;
 import com.javatest.domain.OperationLog;
 import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;
+import com.javatest.util.JacksonUtil;
 import com.javatest.util.annotation.OperLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -79,7 +79,7 @@ public class LoggerAspect {
             for (String key : parameterMap.keySet()) {
                 paramMap.put(key,parameterMap.get(key)[0]);
             }
-            String param = JSON.toJSONString(paramMap);
+            String param = JacksonUtil.obj2json(paramMap);
 
             // 完善信息,id为int类型自增。可改用String传uuid
             // 从session中获取，本地测试写死
@@ -91,7 +91,7 @@ public class LoggerAspect {
             operationLog.setUrl(request.getRequestURI());
             operationLog.setMethodName(methodName);
             operationLog.setRequestParam(param);
-            operationLog.setReturnData(JSON.toJSONString(returnData));
+            operationLog.setReturnData(JacksonUtil.obj2json(returnData));
 //            operationLog.setStartTime();
 //            operationLog.setFinishTime();
             operationLog.setReturnTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
@@ -116,7 +116,7 @@ public class LoggerAspect {
 
             // 获取请求参数
             Object[] args = joinPoint.getArgs();
-            String param = JSON.toJSONString(args);
+            String param = JacksonUtil.obj2json(args);
 
             // 获取异常信息
             StringBuilder sb = new StringBuilder();

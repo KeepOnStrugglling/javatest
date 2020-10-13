@@ -1,5 +1,6 @@
 package com.javatest.websocket;
 
+import com.javatest.util.JacksonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         // 对心跳进行回复(回复自己)
-        if (message.equals("$$")) {
+        if ("$$".equals(message)) {
             try {
                 sendInfo("1$",sid);
             } catch (IOException e) {
@@ -102,9 +102,9 @@ public class WebSocketServer {
 //        }
             try {
                 //从message中解析出toSid和content
-                Map map = JSONObject.parseObject(message, Map.class);
+                Map<String,Object> map = JacksonUtil.json2map(message);
                 String toSid = (String) map.get("toSid");
-                String content = "sid" + sid + ":" + (String) map.get("content");
+                String content = "sid" + sid + ":" + map.get("content");
                 //验证toSid是否上线。如果toSid为""，视为群发
                 if ("".equals(toSid) || websocketMap.get(toSid) != null) {
                     sendInfo(content, toSid);
@@ -140,7 +140,7 @@ public class WebSocketServer {
      * 群发自定义消息（用set会方便些）
      * */
     public void sendInfo(String message, String toSid) throws IOException {
-        if (!message.equals("1$")) {    // 加这个判断只是单独不想每次回复心跳时都记录一次日志
+        if (!"1$".equals(message)) {    // 加这个判断只是单独不想每次回复心跳时都记录一次日志
             log.info("推送消息到窗口" + toSid + "，推送内容:" + message);
         }
         /*for (WebSocketServer item : webSocketSet) {
@@ -166,7 +166,6 @@ public class WebSocketServer {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    continue;
                 }
             }
         }

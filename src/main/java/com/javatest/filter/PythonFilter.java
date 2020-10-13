@@ -1,13 +1,18 @@
 package com.javatest.filter;
 
-import com.alibaba.fastjson.JSONObject;
+import com.javatest.util.JacksonUtil;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebFilter(urlPatterns = "/python/*",filterName = "pythonfilter")
 public class PythonFilter implements Filter {
@@ -31,10 +36,10 @@ public class PythonFilter implements Filter {
                     response.setCharacterEncoding("UTF-8");
                     response.setContentType("application/json; charset=utf-8");
                     PrintWriter printWriter = response.getWriter();
-                    JSONObject jsonObject = new JSONObject();
+                    Map<String,Object> jsonObject = new HashMap<>();
                     jsonObject.put("status", 4404); //自定义，前端要页面显示python代码包含敏感词
                     jsonObject.put("msg", String.format("第%d行出现敏感词:'%s'" ,i+1, line));
-                    printWriter.append(jsonObject.toString());
+                    printWriter.append(JacksonUtil.obj2json(jsonObject));
                     return;
                 }
             }

@@ -1,11 +1,11 @@
 package com.javatest.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.javatest.domain.ExceptionLog;
 import com.javatest.domain.OperationLog;
 import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;
+import com.javatest.util.JacksonUtil;
 import com.javatest.util.annotation.OperLog;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -77,7 +77,7 @@ public class LoggerAspect2 {
             for (String key : parameterMap.keySet()) {
                 paramMap.put(key, parameterMap.get(key)[0]);
             }
-            String param = JSON.toJSONString(paramMap);
+            String param = JacksonUtil.obj2json(paramMap);
             operationLog.setRequestParam(param);
 
             // 执行方法
@@ -95,7 +95,7 @@ public class LoggerAspect2 {
                     operationLog.setUrl(request.getRequestURI());
                     operationLog.setMethodName(methodName);
                     operationLog.setRequestParam(param);
-                    operationLog.setReturnData(JSON.toJSONString(object));
+                    operationLog.setReturnData(JacksonUtil.obj2json(object));
                     operationLog.setReturnTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()));
 
                     operationLogService.insertSelective(operationLog);
