@@ -175,7 +175,7 @@ public class JacksonUtil {
             return null;
         }
         try {
-            return objectMapper.readValue(json,Map.class);
+            return objectMapper.readValue(json,new TypeReference<Map<String, Object>>(){});
         } catch (Exception e) {
             log.error("json转为Map出错！",e);
         }

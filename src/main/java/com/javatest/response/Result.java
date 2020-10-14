@@ -62,7 +62,12 @@ public class Result<T> implements Serializable {
 
     // 异常调用的方法
     public static Result<BaseException> fail(BaseException e) {
-        return new Result<>(e.getCode(),e,e.getMsg());
+        return new Result<>(e.getCode(),null,e.getMsg());
+    }
+
+    // 异常调用的方法，含数据
+    public static <T> Result<T> fail(BaseException e, T data) {
+        return new Result<>(e.getCode(),data,e.getMsg());
     }
 
     // 异常调用的方法，含数据

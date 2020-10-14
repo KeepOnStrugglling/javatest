@@ -176,4 +176,28 @@ public class SimpleTest {
         BigDecimal a = new BigDecimal("-520000");
         System.out.println(a.abs().compareTo(new BigDecimal("10000")) > 0 ? (a.signum() < 0 ? "-" : "") + "10000" : a.toString());
     }
+
+    @Test
+    public void test15(){
+        ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add(null);
+        list.add("3");
+        for (String s : list) {
+            System.out.println(s + ",");
+        }
+        list.remove(null);
+        System.out.println("++++++++++++++++++++++++++++");
+        for (String s : list) {
+            System.out.println(s + ",");
+        }
+    }
+
+    @Test
+    public void test16(){
+        Map<String, Integer> auditMap = new HashMap();
+        Integer auditNum = auditMap.get("hello");
+        if (auditNum!=null)
+        System.out.println(auditNum);
+    }
 }

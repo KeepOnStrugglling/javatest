@@ -24,8 +24,9 @@ public enum ReturnCode {
     USER_NOT_EXIST(2004,"用户不存在"),
 
     /* 接口异常 */
-    NULL_POINTER(3001,"空指针异常！"),
-    MY_EXCEPTION(3005,"自定义异常！");
+    NULL_POINTER(3001,"空指针异常"),
+    FT_EXCEPTION(3002,"文件异常"),
+    MY_EXCEPTION(3100,"自定义异常");
 
 
     private final Integer code;
