@@ -6,7 +6,7 @@ import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;
 import com.javatest.util.JacksonUtil;
-import com.javatest.util.annotation.OperLog;
+import com.javatest.annotation.OperLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -37,7 +37,7 @@ public class LoggerAspect {
     private ExceptionLogService exceptionLogService;
 
     // 定义请求日志切入点表达式，扫描被@OperLog注解的方法
-    @Pointcut("@annotation(com.javatest.util.annotation.OperLog)")
+    @Pointcut("@annotation(com.javatest.annotation.OperLog)")
     public void operLogPt() {
     }
 

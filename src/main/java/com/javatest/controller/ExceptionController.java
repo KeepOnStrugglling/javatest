@@ -1,5 +1,6 @@
 package com.javatest.controller;
 
+import com.javatest.annotation.ResponseResult;
 import com.javatest.exception.MyException;
 import com.javatest.response.Result;
 import com.javatest.util.HttpRequestUtil;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/excep")
+@ResponseResult
 public class ExceptionController {
 
     @Autowired
@@ -52,7 +54,8 @@ public class ExceptionController {
     public String dispatch(HttpServletRequest request, HttpServletResponse response){
         Map<String,String> cookies = new HashMap<>();
         cookies.put("testCookie","15973");
-        return httpRequestUtil.dispatch("http://127.0.0.1:9010/javatest/excep/cookie",cookies,request,response);
+        String dispatch = httpRequestUtil.dispatch("http://127.0.0.1:9010/javatest/excep/cookie", cookies, request, response);
+        return dispatch;
     }
 
     @RequestMapping("/cookie")

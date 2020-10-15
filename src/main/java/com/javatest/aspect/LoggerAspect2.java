@@ -6,10 +6,9 @@ import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
 import com.javatest.util.IpAdressUtil;
 import com.javatest.util.JacksonUtil;
-import com.javatest.util.annotation.OperLog;
+import com.javatest.annotation.OperLog;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -41,7 +40,7 @@ public class LoggerAspect2 {
     private ExceptionLogService exceptionLogService;
 
     // 定义请求日志切入点表达式，扫描被@OperLog注解的方法
-    @Pointcut("execution(* com.javatest.controller.*.*(..)) || @annotation(com.javatest.util.annotation.OperLog)")
+    @Pointcut("execution(* com.javatest.controller.*.*(..)) || @annotation(com.javatest.annotation.OperLog)")
     public void operLogPt() {
     }
 
