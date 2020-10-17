@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +205,8 @@ public class LoopTestServiceImpl {
     }
 
     /**
-     * 结论：同loopTest8
+     * 结论：同loopTest8，事务开启，报错后便不再循环，但是报错前插入的数据会被提交，从而入库。没有全部回滚。
+     *      后续的代码仍会执行，且能正常入库
      */
     @Transactional
     public void loopTest9() {
@@ -221,10 +225,10 @@ public class LoopTestServiceImpl {
         }
         System.out.println("count:" + count);
         StudentScore s = new StudentScore();
-        s.setId(10096L);
+        s.setId(10042L);
         s.setScore(99);
         studentScoreMapper.updateByPrimaryKeySelective(s);
-        System.out.println(studentScoreMapper.selectByPrimaryKey(10096L));
+        System.out.println(studentScoreMapper.selectByPrimaryKey(10042L));
     }
 
     /**
@@ -381,7 +385,114 @@ public class LoopTestServiceImpl {
         runPythonService.doUpdate();
     }
 
+    /**
+     * 结论：同loopTest9
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void loopTest16() {
+        int count = 0;
+        boolean flag = false;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+            flag = true;
+        } catch (Exception e) {
+            flag = false;
+        }
+        if (flag) {
+            System.out.println("count:" + count);
+            studentScoreService.doUpdate();
+        }
+    }
 
+    /**
+     * 结论：如果在catch中抛出checked exception，那么事务不会回滚，报错前的数据会入库，catch里面的操作也会执行并入库。
+     *      除非设置rollbackFor = Exception.class，那么效果同loopTest18
+     */
+    @Transactional
+    public void loopTest17() throws IOException {
+        int count = 0;
+        boolean flag = true;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                if (i==2) {
+                    FileInputStream is = new FileInputStream(new File("abcd.txt"));
+                }
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+        } catch (Exception e) {
+            studentScoreService.doUpdate();
+            throw e;
+        }
+        if (flag) {
+            System.out.println("count:" + count);
+            studentScoreService.doUpdate();
+        }
+    }
+
+    /**
+     * 结论：如果在catch中抛出unchecked exception，那么事务将会回滚，catch里面的操作会执行但不会入库。此时不管是否设置rollbackFor = Exception.class都会触发回滚
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void loopTest18() {
+        int count = 0;
+        boolean flag = true;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+//            flag = true;
+        } catch (Exception e) {
+            studentScoreService.doUpdate();
+            throw e;
+        }
+        if (flag) {
+            System.out.println("count:" + count);
+            studentScoreService.doUpdate();
+        }
+    }
+
+    /**
+     * 结论：同loopTest18，catch里面的操作即便是非事务方法，也会执行但不会入库
+     */
+    @Transactional
+    public void loopTest19() {
+        int count = 0;
+        boolean flag = true;
+        try {
+            for (int i = 0; i < 5; i++) {
+                StudentScore studentScore = new StudentScore();
+                studentScore.setName("小小" + i);
+                studentScore.setScore(80 + i);
+                count = 1 / (2 - i);
+                studentScoreMapper.insertSelective(studentScore);
+                count++;
+            }
+//            flag = true;
+        } catch (Exception e) {
+            runPythonService.doUpdate();
+            throw new RuntimeException("运行时错误");
+        }
+        if (flag) {
+            System.out.println("count:" + count);
+            studentScoreService.doUpdate();
+        }
+    }
 
 
 

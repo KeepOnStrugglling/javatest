@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/loopTest")
 public class LoopTestController {
@@ -89,6 +91,34 @@ public class LoopTestController {
     @RequestMapping("/test15")
     public String test15(){
         loopTestService.loopTest15();
+        return "ok";
+    }
+
+    @RequestMapping("/test16")
+    public String test16(){
+        loopTestService.loopTest16();
+        return "ok";
+    }
+
+    @RequestMapping("/test17")
+    public String test17(){
+        try {
+            loopTestService.loopTest17();
+        } catch (IOException e) {
+            System.out.println(111);
+        }
+        return "ok";
+    }
+
+    @RequestMapping("/test18")
+    public String test18(){
+        loopTestService.loopTest18();
+        return "ok";
+    }
+
+    @RequestMapping("/test19")
+    public String test19(){
+        loopTestService.loopTest19();
         return "ok";
     }
 

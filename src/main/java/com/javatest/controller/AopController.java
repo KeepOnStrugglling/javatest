@@ -1,6 +1,6 @@
 package com.javatest.controller;
 
-import com.javatest.util.annotation.OperLog;
+import com.javatest.annotation.OperLog;
 import org.springframework.web.bind.annotation.*;
 
 

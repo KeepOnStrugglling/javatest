@@ -200,4 +200,33 @@ public class SimpleTest {
         if (auditNum!=null)
         System.out.println(auditNum);
     }
+
+    @Test
+    public void test17(){
+        boolean[] array = new boolean[70];
+        List<String> list = new ArrayList<>();
+        int count = 0;
+
+        Random random = new Random();
+        while(count<70) {
+            int i = random.nextInt(70);
+            if (!array[i]) {
+                list.add(i+"");
+                array[i] = true;
+                count++;
+            }
+        }
+        count = 0;
+        for (String s : list) {
+            if (count<9) {
+                System.out.print(s + ",");
+                count++;
+            } else {
+                System.out.println("");
+                System.out.print(s + ",");
+                count = 1;
+            }
+        }
+
+    }
 }

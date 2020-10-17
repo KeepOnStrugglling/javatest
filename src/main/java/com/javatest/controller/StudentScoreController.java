@@ -1,5 +1,6 @@
 package com.javatest.controller;
 
+import com.javatest.annotation.ResponseResult;
 import com.javatest.domain.StudentScore;
 import com.javatest.service.StudentScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ public class StudentScoreController {
     @Autowired
     private StudentScoreService service;
 
+    @ResponseResult
     @GetMapping("/findOneShort/{id}")
     public StudentScore findStudentScoreByIdShort(@PathVariable("id") Long id) {
         return service.selectByPrimaryKey(id);
