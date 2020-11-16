@@ -62,4 +62,14 @@ public class StudentScoreController {
         }
         return service.update(studentScore);
     }
+
+    /**
+     * 使用统一异常处理类进行
+     * @param studentScore
+     * @return
+     */
+    @PostMapping(value = "/update3")
+    public String update3(@Valid StudentScore studentScore) {
+        return service.update(studentScore);
+    }
 }
