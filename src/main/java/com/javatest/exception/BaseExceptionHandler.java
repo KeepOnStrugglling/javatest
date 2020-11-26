@@ -34,10 +34,10 @@ public class BaseExceptionHandler implements ResponseBodyAdvice<Object> {
     /**
      * 用于处理自定义异常
      */
-    @ExceptionHandler(MyException.class)
-    public Result formMyException(MyException e) {
+    @ExceptionHandler(BusinessException.class)
+    public Result formBusinessException(BusinessException e) {
         log.error("==========执行报错===========\n", e);
-        return Result.fail(ReturnCode.MY_EXCEPTION);
+        return Result.fail(ReturnCode.Business_EXCEPTION);
     }
 
     /**
