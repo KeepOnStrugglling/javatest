@@ -1,7 +1,7 @@
 package com.javatest.controller;
 
 import com.javatest.annotation.ResponseResult;
-import com.javatest.exception.BusinessException;
+import com.javatest.exception.MyException;
 import com.javatest.response.Result;
 import com.javatest.util.HttpRequestUtil;
 import lombok.SneakyThrows;
@@ -37,7 +37,7 @@ public class ExceptionController {
     @SneakyThrows   // lombok的注解，强制抛出异常，仅建议在测试/学习时使用
     @RequestMapping("/error3")
     public String error3(){
-        throw new BusinessException("自定义异常");
+        throw new MyException("自定义异常");
     }
 
     @RequestMapping("/normal")
