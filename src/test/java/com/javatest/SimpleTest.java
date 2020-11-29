@@ -240,7 +240,7 @@ public class SimpleTest {
 
     @Test
     public void test18() {
-        String str = "APP_IDabcTIMESTAMP2016-04-12 15:06:06 100TRANS_ID20160412150606100335423B2732427";
+        String str = "http://localhost:88/api/business/test?APP_ID=10010&cc=dd&ee=fffQ27A9832";
         System.out.println(DigestUtils.md5DigestAsHex(str.getBytes()));
 
     }
