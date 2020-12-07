@@ -69,9 +69,4 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> fail(BaseException e, T data) {
         return new Result<>(e.getCode(),data,e.getMsg());
     }
-
-    // 异常调用的方法，含数据
-    public static <T> Result fail(BaseException e, T data) {
-        return new Result(e.getCode(),data,e.getMsg());
-    }
 }
