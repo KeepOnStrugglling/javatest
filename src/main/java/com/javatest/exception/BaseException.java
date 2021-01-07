@@ -31,5 +31,6 @@ public class BaseException extends Exception {
     public BaseException(ReturnCode returnCode) {
         super(returnCode.getMsg());
         this.code = returnCode.getCode();
+        this.msg = returnCode.getMsg();
     }
 }
