@@ -1,6 +1,7 @@
 package com.javatest.domain;
 
 
+import com.javatest.annotation.check.StatusValue;
 import com.javatest.exception.valid.AddGroup;
 import com.javatest.exception.valid.UpdateGroup;
 import lombok.Data;
@@ -42,6 +43,7 @@ public class BrandEntity implements Serializable {
     /**
      * 显示状态[0-不显示；1-显示]
      */
+    @StatusValue
     private Integer showStatus;
     /**
      * 检索首字母

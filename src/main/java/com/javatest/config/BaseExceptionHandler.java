@@ -13,12 +13,15 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.annotation.Annotation;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,6 +89,16 @@ public class BaseExceptionHandler implements ResponseBodyAdvice<Object> {
         return request.getAttribute(RESPONSE_RESULT) != null;
     }
 
+    /**
+     * 重写ResponseBodyAdvice接口提供的beforeBodyWrite方法修改返回值
+     * @param body 请求的响应内容，即controller方法返回的值，可以在本方法进行调整
+     * @param returnType controller方法的详细信息，里面包含返回值、方法的信息如入参类型、返回类型等
+     * @param selectedContentType 返回的contentType，如application/json
+     * @param selectedConverterType 返回时使用到的转换器
+     * @param request 请求
+     * @param response 响应
+     * @return 处理后实际返回给前端的内容
+     */
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,

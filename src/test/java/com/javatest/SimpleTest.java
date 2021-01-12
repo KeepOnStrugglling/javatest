@@ -16,6 +16,9 @@ import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -243,5 +246,33 @@ public class SimpleTest {
         String str = "http://localhost:88/api/business/test?APP_ID=10010&cc=dd&ee=fffQ27A9832";
         System.out.println(DigestUtils.md5DigestAsHex(str.getBytes()));
 
+    }
+
+    @Test
+    public void test19() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse("2020-11-30 09:55:30");
+        System.out.println(date.getTime());
+    }
+
+    @Test
+    public void test20() {
+        System.out.println(Instant.now().getEpochSecond());;
+    }
+
+    @Test
+    public void test21() {
+        String user = "10010";
+        String timestamp = "1606727129";
+        String password = "1234567";
+        String enStr = user + timestamp + password;
+
+        System.out.println(Instant.now().getEpochSecond());;
+    }
+
+    @Test
+    public void test22() {
+        String a = (String)null;
+        System.out.println("ok");
     }
 }

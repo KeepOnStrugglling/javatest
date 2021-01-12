@@ -21,6 +21,11 @@ public class StudentScoreController {
     public StudentScore findStudentScoreByIdShort(@PathVariable("id") Long id) {
         return service.selectByPrimaryKey(id);
     }
+    @ResponseResult
+    @GetMapping("/findOneShort1")
+    public StudentScore findStudentScoreByIdShort1(@RequestParam("id") Long id) {
+        return service.selectByPrimaryKey(id);
+    }
 
     @GetMapping("/findOneLong/{id}")
     public StudentScore findStudentScoreByIdLong(@PathVariable("id") Long id) {
