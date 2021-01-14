@@ -1,4 +1,4 @@
-package com.javatest.config;
+package com.javatest.util;
 
 import org.springframework.context.ApplicationContext;
 

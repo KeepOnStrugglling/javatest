@@ -1,6 +1,5 @@
 package com.javatest.schedule.quartz.projectSample;
 
-import com.javatest.config.SpringContextUtil;
 import com.javatest.domain.Schedule;
 import com.javatest.service.ScheduleService;
 import org.quartz.Job;

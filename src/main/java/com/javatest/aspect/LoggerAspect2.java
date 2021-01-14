@@ -4,9 +4,12 @@ import com.javatest.domain.ExceptionLog;
 import com.javatest.domain.OperationLog;
 import com.javatest.service.ExceptionLogService;
 import com.javatest.service.OperationLogService;
+import com.javatest.util.HttpRequestWrapper;
 import com.javatest.util.IpAdressUtil;
 import com.javatest.util.JacksonUtil;
 import com.javatest.annotation.OperLog;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.entity.ContentType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Pointcut;
@@ -48,6 +51,8 @@ public class LoggerAspect2 {
     @Around(value = "operLogPt()")
     public Object addOperLog(ProceedingJoinPoint joinPoint) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpRequestWrapper wrapper = null;
+
         OperationLog operationLog = new OperationLog();
         Object object = null;
         try {
@@ -70,13 +75,24 @@ public class LoggerAspect2 {
                 operationLog.setRequestDes(annotation.requestDes());
             }
 
-            // 获取POST请求参数
-            Map<String, String> paramMap = new HashMap<>();
-            Map<String, String[]> parameterMap = request.getParameterMap();
-            for (String key : parameterMap.keySet()) {
-                paramMap.put(key, parameterMap.get(key)[0]);
+            String param = null;
+            // application/json格式的入参
+            if (request.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                wrapper = (HttpRequestWrapper) request;
+                // 此时可以从wrapper中获取到缓存的请求入参
+                param = IOUtils.toString(wrapper.getBody(),request.getCharacterEncoding());
             }
-            String param = JacksonUtil.obj2json(paramMap);
+            // 其余格式的入参
+            else {
+                // 获取POST请求参数
+                Map<String, String> paramMap = new HashMap<>();
+                Map<String, String[]> parameterMap = request.getParameterMap();
+                for (String key : parameterMap.keySet()) {
+                    paramMap.put(key, parameterMap.get(key)[0]);
+                }
+                param = JacksonUtil.obj2json(paramMap);
+            }
+
             operationLog.setRequestParam(param);
 
             // 执行方法

@@ -1,4 +1,4 @@
-package com.javatest.config;
+package com.javatest.exception;
 
 import com.javatest.enums.ReturnCode;
 import com.javatest.exception.BaseException;
