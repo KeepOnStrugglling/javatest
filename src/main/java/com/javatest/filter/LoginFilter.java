@@ -14,7 +14,8 @@ import java.io.IOException;
 
 /**
  * @author: azure
- **/
+ * @description: 将请求封装到自定义类HttpRequestWrapper中，避免无法多次获取application/json类型的request参数的情况
+ */
 @WebFilter(urlPatterns = {"/*"}, filterName = "loginFilter")
 @Slf4j
 public class LoginFilter implements Filter {
@@ -39,7 +40,7 @@ public class LoginFilter implements Filter {
         String body = null;
 
         // 只针对application/json格式的进行封装
-        if (req.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
+        if (req.getContentType() != null && req.getContentType().equals(ContentType.APPLICATION_JSON.getMimeType())) {
             wrapper = new HttpRequestWrapper(req);
         }
 
