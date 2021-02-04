@@ -25,7 +25,7 @@ public class LoginFilter implements Filter {
 
     }
 
-    @SneakyThrows(MyException.class)
+//    @SneakyThrows(MyException.class)
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;

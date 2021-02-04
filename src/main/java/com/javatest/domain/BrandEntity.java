@@ -43,13 +43,13 @@ public class BrandEntity implements Serializable {
     /**
      * 显示状态[0-不显示；1-显示]
      */
-    @StatusValue
+    @StatusValue(vals = {0,1},groups = AddGroup.class)
     private Integer showStatus;
     /**
      * 检索首字母
      */
     @NotNull(groups = {AddGroup.class})
-    @Pattern(regexp = "/^[a-zA-Z]$/",message = "检索首字母必须是一个字母",groups = {AddGroup.class,UpdateGroup.class})
+    @Pattern(regexp = "^[a-zA-Z]$",message = "检索首字母必须是一个字母",groups = {AddGroup.class,UpdateGroup.class})
     private String firstLetter;
     /**
      * 排序
