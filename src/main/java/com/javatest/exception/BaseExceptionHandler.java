@@ -1,8 +1,6 @@
 package com.javatest.exception;
 
 import com.javatest.enums.ReturnCode;
-import com.javatest.exception.BaseException;
-import com.javatest.exception.MyException;
 import com.javatest.response.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -10,18 +8,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,19 +46,31 @@ public class BaseExceptionHandler implements ResponseBodyAdvice<Object> {
     }
 
     /**
-     * 处理jsr303规范校验的错误信息
+     * 处理jsr303规范校验的错误信息，针对用@RequestBody注解的对象
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleValidException(MethodArgumentNotValidException e) {
         // 获取异常中的校验错误信息
-        BindingResult bindingResult = e.getBindingResult();
+        return getValidExceptionResult(e.getBindingResult());
+    }
+
+    /**
+     * 针对非@RequestBody注解的对象的校验错误
+     */
+    @ExceptionHandler(BindException.class)
+    public Result handleBindingValidException(BindException e) {
+        return getValidExceptionResult(e.getBindingResult());
+    }
+
+    private Result getValidExceptionResult(BindingResult bindingResult) {
+        // 获取异常中的校验错误信息
         Map<String, String> map = new HashMap<>();
         bindingResult.getFieldErrors().forEach(item -> {
             // 获取校验失败字段
             String field = item.getField();
             // 获取校验失败的提示信息
             String message = item.getDefaultMessage();
-            map.put(field,message);
+            map.put(field, message);
         });
         return Result.fail(ReturnCode.PARAM_VALID_EXCEPTION, map);
     }
