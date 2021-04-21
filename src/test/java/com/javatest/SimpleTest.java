@@ -275,4 +275,47 @@ public class SimpleTest {
         String a = (String)null;
         System.out.println("ok");
     }
+
+    @Test
+    public void test23() {
+        int count = 0;
+        foo(count);
+    }
+
+    private void foo(int count) {
+        try {
+            if (count != 4) {
+                int i = 1/0;
+            }
+            System.out.println("111");
+        } catch (Exception e) {
+            if (count < 3) {
+                count ++;
+                foo(count);
+                System.out.println(count);
+            } else {
+                System.out.println("报错了");
+                throw e;
+            }
+        }
+    }
+
+
+    @Test
+    public void test24() {
+        Integer a = 128;
+        Integer b = new Integer(128);
+        Integer c = 128;
+        System.out.println(a == b);
+        System.out.println(a==c);
+
+        System.out.println("---------");
+
+        Integer d = 127;
+        Integer e = new Integer(127);
+        Integer f = 127;
+        System.out.println(d == e);
+        System.out.println(d == f);
+
+    }
 }
