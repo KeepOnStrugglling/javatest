@@ -318,4 +318,84 @@ public class SimpleTest {
         System.out.println(d == f);
 
     }
+
+    @Test
+    public void test25(){
+        String param = "深圳 福田无线网格 1 0.9 0.38 0.88 1.5 0.5 0.8 1 6.96 良\n" +
+                "清远 东区建维优支撑团队 1 0.9 0.46 0.72 1.5 0.5 0.8 0.95 6.83 良\n" +
+                "汕头 濠江划小团队 1 0.9 0.59 0.54 1.5 0.5 0.8 1 6.83 良\n" +
+                "汕头 潮阳划小团队 1 0.9 0.59 0.54 1.5 0.5 0.8 1 6.83 良\n" +
+                "汕头 潮南划小团队 1 0.9 0.59 0.54 1.5 0.5 0.8 1 6.83 良\n" +
+                "珠海 斗门网络划小团队 1 0.9 0.22 0.74 1.5 0.5 0.79 1 6.65 良\n" +
+                "湛江 南部划小团队 1 0.88 0.69 0.84 1.5 0.5 0.74 0.5 6.65 良\n" +
+                "湛江 北部划小团队 1 0.9 0.75 0.89 1.5 0.5 0.8 0.3 6.64 良\n" +
+                "佛山 狮山云网划小支撑室 0.2 0.9 1.01 0.76 1.5 0.5 0.76 1 6.6 良\n" +
+                "佛山 新城云网划小支撑室 0.2 0.9 1.01 0.76 1.5 0.5 0.76 1 6.6 良\n" +
+                "佛山 高明云网划小支撑室 0 0.9 1.15 0.82 1.5 0.5 0.74 1 6.61 良\n" +
+                "河源 南部网格 0 0.9 0.99 0.9 1.5 0.5 0.8 1 6.59 良\n" +
+                "深圳 龙岗网格 0 0.9 1.05 0.68 1.5 0.5 0.8 1 6.43 良\n" +
+                "江门 开平-恩平网络支撑中心 0 0.9 0.84 0.89 1.5 0.5 0.8 1 6.43 良\n" +
+                "佛山 南海云网划小支撑室 0 0.9 1.08 0.68 1.5 0.5 0.76 1 6.42 良\n" +
+                "佛山 顺德云网划小支撑室 0 0.9 1.02 0.72 1.5 0.5 0.76 1 6.40 良\n" +
+                "清远 南区建维优支撑团队 0 0.9 0.83 0.85 1.5 0.5 0.8 1 6.38 良\n" +
+                "广州 荔湾运营支撑团队 0 0.9 1.07 0.59 1.5 0.5 0.8 1 6.36 良\n" +
+                "江门 城区-鹤山网络支撑中心 0 0.9 0.96 0.74 1.5 0.5 0.8 0.95 6.35 良\n" +
+                "东莞 城区网格 1 0.87 0.23 0.45 1.5 0.5 0.78 1 6.33 良\n" +
+                "江门 新会-台山网络支撑中心 0 0.9 0.87 0.76 1.5 0.5 0.8 1 6.33 良\n" +
+                "揭阳 城区划小支撑团队 1 0.9 0.8 0.60 1.5 0.5 0 1 6.3 良\n" +
+                "韶关 网西区建维优（乐昌/坪石/乳源） 1 0.9 0 0.57 1.5 0.5 0.8 1 6.27 良\n" +
+                "珠海 金湾网络划小团队 1 0.9 0 0.54 1.5 0.5 0.8 1 6.24 良";
+        StringBuilder sb = new StringBuilder();
+        // 获取列表
+        String[] list = param.split("\n");
+        for (int i = 0; i < list.length; i++) {
+            String[] str = list[i].split(" ");
+            sb.append("{\n");
+            // 获取每行的内容
+            for (int j = 0; j < str.length; j++) {
+                if (j == 0) {
+                    sb.append("name:'").append(str[j]).append("',\n");
+                }
+                if (j == 1) {
+                    sb.append("pname:'").append(str[j]).append("',\n");
+                }
+                if (j == 2) {
+                    sb.append("score1:").append(str[j]).append(",\n");
+                }
+                if (j == 3) {
+                    sb.append("score2:").append(str[j]).append(",\n");
+                }
+                if (j == 4) {
+                    sb.append("score3:").append(str[j]).append(",\n");
+                }
+                if (j == 5) {
+                    sb.append("score4:").append(str[j]).append(",\n");
+                }
+                if (j == 6) {
+                    sb.append("score5:").append(str[j]).append(",\n");
+                }
+                if (j == 7) {
+                    sb.append("score6:").append(str[j]).append(",\n");
+                }
+                if (j == 8) {
+                    sb.append("score7:").append(str[j]).append(",\n");
+                }
+                if (j == 9) {
+                    sb.append("score8:").append(str[j]).append(",\n");
+                }
+                if (j == 10) {
+                    sb.append("score9:{\nvalue:").append(str[j]).append(",\nclassName: 'black'\n},\n");
+                }
+                if (j == 11) {
+                    sb.append("score10: {\nvalue: '").append(str[j]).append("',\nclassName: 'black'\n}\n");
+                }
+
+            }
+            sb.append("}");
+            if(i<list.length-1) {
+                sb.append(",\n");
+            }
+        }
+        System.out.println(sb.toString());
+    }
 }

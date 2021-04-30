@@ -55,7 +55,7 @@ public class TestController {
      * 使用校验分组，指定分组为Add
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody @Validated({AddGroup.class}) BrandEntity brand){
+    public Result save(@RequestBody @Validated({AddGroup.class}) BrandEntity brand) {
         // 具体业务逻辑，此略
 
         return Result.success();
@@ -65,7 +65,7 @@ public class TestController {
      * 使用校验分组，指定分组为Update
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody @Validated({UpdateGroup.class}) BrandEntity brand){
+    public Result update(@RequestBody @Validated({UpdateGroup.class}) BrandEntity brand) {
         // 具体业务逻辑，此略
 
         return Result.success();
